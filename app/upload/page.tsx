@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 import { View, Document, DocumentStatus } from '../../lib/types';
+// import * as pdfjs from 'pdfjs-dist'; // Remove direct import
 
 import Spinner from '../../components/Spinner';
 import { Upload } from 'lucide-react';
 import { useAppContext } from '../../lib/AppContext';
+
+// Set the worker source for pdfjs-dist (will be set after dynamic import)
+// pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs'; // Remove direct setting
 
 const DOCUMENT_TYPES = [
   'Fact Sheet',
@@ -78,7 +82,17 @@ const UploadPage: React.FC<{}> = () => {
 
   const [fundType, setFundType] = useState('Open-ended Fund');
 
-  
+  const [pdfjsLib, setPdfjsLib] = useState<any>(null);
+
+  useEffect(() => {
+    // Dynamically import pdfjs-dist on the client-side
+    const loadPdfjs = async () => {
+      const pdfjs = await import('pdfjs-dist');
+      pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+      setPdfjsLib(pdfjs);
+    };
+    loadPdfjs();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -105,10 +119,21 @@ const UploadPage: React.FC<{}> = () => {
 
 
     try {
+        if (!pdfjsLib) {
+          setError("PDF.js library not loaded. Please try again.");
+          setIsLoading(false);
+          return;
+        }
 
-        const extractedText = await file.text();
-
-    
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let extractedText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item: any) => item.str).join(' ');
+          extractedText += `--- PAGE ${i} ---\n${pageText}\n`;
+        }
 
         const newDocId = `doc-${Date.now()}`;
 
@@ -135,7 +160,9 @@ const UploadPage: React.FC<{}> = () => {
         setTimeout(() => {
 
           onUploadComplete(newDoc, extractedText);
+
           router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+
         }, 1000);
 
         
@@ -144,7 +171,7 @@ const UploadPage: React.FC<{}> = () => {
 
         console.error("Failed to process file:", e);
 
-        setError("Could not read or process the file. Please ensure it's a valid text-based file and try again.");
+        setError("Could not read or process the file. Please ensure it's a valid PDF and try again.");
 
         setIsLoading(false);
 
