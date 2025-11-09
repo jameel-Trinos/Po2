@@ -27,19 +27,6 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <header>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button>Sign In</Button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <Button variant="outline">Sign Up</Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </header>
           {children}
         </body>
       </html>
