@@ -1,12 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { UserButton } from "@clerk/nextjs";
 import {
   Home,
@@ -19,18 +12,37 @@ import {
   Plus,
   Upload,
 } from "lucide-react";
+import Link from "next/link";
+import { motion } from 'framer-motion';
+
+const navItems = [
+  { name: "Home", icon: Home, href: "/dashboard", active: true },
+  { name: "My Projects", icon: FileText, href: "/dashboard/projects", active: false },
+  { name: "Settings", icon: Settings, href: "/dashboard/settings", active: false },
+];
+
+const statusCards = [
+  { title: "Documents in review", value: 0, icon: Search, color: "blue" },
+  { title: "Documents approved", value: 0, icon: Check, color: "green" },
+  { title: "Needs action plan", value: 0, icon: FolderOpen, color: "red" },
+];
 
 export default function DashboardPage() {
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-zinc-950 font-sans">
       {/* ========== Left Sidebar ========== */}
-      <aside className="w-64 bg-white dark:bg-gray-900 shadow-md flex flex-col justify-between">
-        <div className="p-6">
+      <motion.aside
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-64 bg-white dark:bg-zinc-900 shadow-xl flex flex-col justify-between p-4"
+      >
+        <div className="p-4">
           {/* Logo */}
-          <div className="flex items-center space-x-2 mb-10">
+          <div className="flex items-center space-x-3 mb-10">
             <svg
-              width="28"
-              height="28"
+              width="32"
+              height="32"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -51,132 +63,190 @@ export default function DashboardPage() {
                 strokeLinejoin="round"
               />
             </svg>
-            <h1 className="text-lg font-bold text-gray-800 dark:text-gray-50">
-              Power of Two
+            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-50">
+              Point Of Two
             </h1>
           </div>
 
           {/* Navigation */}
-          <nav className="space-y-2">
-            <Button variant="secondary" className="w-full justify-start relative">
-              <div className="absolute left-0 top-0 h-full w-1 bg-blue-600 rounded-r-md" />
-              <Home className="mr-2 h-4 w-4" />
-              Home
-            </Button>
-
-            <Button variant="ghost" className="w-full justify-start">
-              <FileText className="mr-2 h-4 w-4" />
-              My Projects
-            </Button>
-
-            <Button variant="ghost" className="w-full justify-start">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </Button>
+          <nav className="space-y-3">
+            {navItems.map((item) => (
+              <Link key={item.name} href={item.href} passHref>
+                <motion.button
+                  whileHover={{ scale: 1.02, x: 5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full justify-start relative flex items-center rounded-lg text-base font-medium transition-all duration-200 h-11 px-4 py-2
+                    ${item.active
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800"}
+                  `}
+                >
+                  {item.active && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute left-0 top-0 h-full w-1 bg-white rounded-r-lg"
+                    />
+                  )}
+                  <item.icon className="mr-3 h-5 w-5" />
+                  {item.name}
+                </motion.button>
+              </Link>
+            ))}
           </nav>
         </div>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3">
+        <div className="p-4 border-t border-gray-100 dark:border-zinc-800 flex items-center gap-4">
           <UserButton
             appearance={{
               elements: {
-                avatarBox: "w-9 h-9",
+                avatarBox: "w-10 h-10",
               },
             }}
           />
-          <Button variant="ghost" className="justify-start w-full">
-            <LogOut className="mr-2 h-4 w-4" />
+          <button className="justify-start w-full inline-flex items-center rounded-lg text-base font-medium transition-colors duration-200 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 h-11 px-4 py-2">
+            <LogOut className="mr-3 h-5 w-5" />
             Logout
-          </Button>
+          </button>
         </div>
-      </aside>
+      </motion.aside>
 
       {/* ========== Main Content ========== */}
-      <main className="flex-1 p-10 overflow-y-auto">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-1">
+      <main className="flex-1 p-8 md:p-10 overflow-y-auto">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2"
+        >
           Welcome back, Janice CO!
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="text-lg text-gray-600 dark:text-gray-400 mb-8"
+        >
           Streamline compliance with us.
-        </p>
+        </motion.p>
 
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <Card className="flex flex-col items-center justify-center py-8">
-            <Search className="h-8 w-8 text-blue-500 mb-2" />
-            <CardTitle className="text-4xl font-bold">0</CardTitle>
-            <CardContent className="text-gray-500 text-center mt-1">
-              Documents in review
-            </CardContent>
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center py-8">
-            <Check className="h-8 w-8 text-green-500 mb-2" />
-            <CardTitle className="text-4xl font-bold">0</CardTitle>
-            <CardContent className="text-gray-500 text-center mt-1">
-              Documents approved
-            </CardContent>
-          </Card>
-
-          <Card className="flex flex-col items-center justify-center py-8">
-            <FolderOpen className="h-8 w-8 text-red-500 mb-2" />
-            <CardTitle className="text-4xl font-bold">0</CardTitle>
-            <CardContent className="text-gray-500 text-center mt-1">
-              Needs action plan
-            </CardContent>
-          </Card>
+          {statusCards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
+                className="rounded-xl border bg-white dark:bg-zinc-800 text-card-foreground shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center py-8 px-4"
+              >
+                <Icon className={`h-10 w-10 text-${card.color}-500 mb-3`} />
+                <h3 className="text-5xl font-bold text-gray-900 dark:text-white">{card.value}</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-center mt-2 text-base">
+                  {card.title}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Projects Section */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.6 }}
+          className="flex justify-between items-center mb-5"
+        >
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-50">
             My Projects
           </h3>
-          <Button variant="outline">View all</Button>
-        </div>
+          <Link href="/dashboard/projects" passHref>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center rounded-full text-base font-medium transition-colors duration-200 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 h-11 px-5 py-2"
+            >
+              View all
+            </motion.button>
+          </Link>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {["Blackrock Test Case", "TC17", "TC13", "TC12", "TC10", "TC8"].map(
-            (title) => (
-              <Card key={title} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg text-gray-800 dark:text-gray-100">
-                    {title}
-                  </CardTitle>
-                </CardHeader>
-              </Card>
+            (title, index) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.7 + index * 0.05 }}
+                className="rounded-xl border bg-white dark:bg-zinc-800 text-card-foreground shadow-lg hover:shadow-xl transition-all duration-300 p-6"
+              >
+                <h3 className="text-lg text-gray-800 dark:text-gray-100 font-semibold mb-2">
+                  {title}
+                </h3>
+              </motion.div>
             )
           )}
         </div>
       </main>
 
       {/* ========== Right Sidebar ========== */}
-      <aside className="w-80 bg-white dark:bg-gray-900 shadow-md p-6 flex flex-col gap-6">
-        <Card className="flex flex-col items-center justify-center text-white bg-gradient-to-b from-teal-500 to-teal-600 dark:from-teal-700 dark:to-teal-800 p-8 rounded-xl text-center">
-          <Plus className="h-12 w-12 mb-3" />
-          <CardTitle className="text-xl font-semibold">
-            Want to kickstart a new project?
-          </CardTitle>
-          <CardContent className="text-sm mt-2">
-            Get started by uploading a document
-          </CardContent>
-        </Card>
+      <motion.aside
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.8 }}
+        className="w-80 bg-white dark:bg-zinc-900 shadow-xl p-6 flex flex-col gap-6"
+      >
+        <Link href="/upload" passHref>
+          <motion.div
+            whileHover={{ scale: 1.03, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+            whileTap={{ scale: 0.98 }}
+            className="cursor-pointer rounded-xl border border-dashed border-teal-400 dark:border-teal-600 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-700 dark:to-teal-800 text-white p-8 text-center shadow-lg transition-all duration-300"
+          >
+            <Plus className="h-12 w-12 mb-3 mx-auto" />
+            <h3 className="text-xl font-semibold">
+              Want to kickstart a new project?
+            </h3>
+            <p className="text-sm mt-2 opacity-90">
+              Get started by uploading a document
+            </p>
+          </motion.div>
+        </Link>
 
-        <Card className="flex flex-col items-center justify-center p-6">
-          <Upload className="h-8 w-8 text-gray-500 mb-3" />
-          <Button variant="outline">Upload a document</Button>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.9 }}
+          className="rounded-xl border bg-white dark:bg-zinc-800 text-card-foreground shadow-lg p-6 flex flex-col items-center justify-center"
+        >
+          <Upload className="h-8 w-8 text-gray-500 dark:text-gray-400 mb-3" />
+          <Link href="/upload" passHref>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center rounded-full text-base font-medium transition-colors duration-200 bg-blue-600 text-white hover:bg-blue-700 h-11 px-5 py-2 shadow-md"
+            >
+              Upload a document
+            </motion.button>
+          </Link>
+        </motion.div>
 
-        <Card className="p-5">
-          <CardTitle className="text-lg font-semibold">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 1.0 }}
+          className="rounded-xl border bg-white dark:bg-zinc-800 text-card-foreground shadow-lg p-6"
+        >
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50">
             Version comparison made easy
-          </CardTitle>
-          <CardContent className="text-gray-500 text-sm mt-2">
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
             Quickly view changes between document versions.
-          </CardContent>
-        </Card>
-      </aside>
+          </p>
+        </motion.div>
+      </motion.aside>
     </div>
   );
 }
