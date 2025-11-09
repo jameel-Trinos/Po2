@@ -1,0 +1,191 @@
+[00:00:01.274] Server  LOG      ✓ Ready in 1031ms
+[00:00:03.514] Server  ERROR    ⨯ ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: /Volumes/Trinos/Learning/PointofTwo/Po2/app/globals.css:1:1: Can't resolve '@/app/globals.css' in '/Volumes/Trinos/Learning/PointofTwo/Po2/app'
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (/Volumes/Trinos/Learning/PointofTwo/Po2/node_modules/@tailwindcss/postcss/dist/index.js:10:6912)]
+    [at process.processTicksAndRejections (node:internal/process/task_queues:105:5)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+
+
+[00:00:04.557] Browser ERROR   uncaughtError: Error: ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: /Volumes/Trinos/Learning/PointofTwo/Po2/app/globals.css:1:1: Can't resolve '@/app/globals.css' in '/Volumes/Trinos/Learning/PointofTwo/Po2/app'
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (/Volumes/Trinos/Learning/PointofTwo/Po2/node_modules/@tailwindcss/postcss/dist/index.js:10:6912)]
+    [at process.processTicksAndRejections (node:internal/process/task_queues:105:5)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+
+
+[00:00:04.722] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: /Volumes/Trinos/Learning/PointofTwo/Po2/app/globals.css:1:1: Can't resolve '@/app/globals.css' in '/Volumes/Trinos/Learning/PointofTwo/Po2/app'
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (/Volumes/Trinos/Learning/PointofTwo/Po2/node_modules/@tailwindcss/postcss/dist/index.js:10:6912)]
+    [at process.processTicksAndRejections (node:internal/process/task_queues:105:5)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[00:00:05.168] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: /Volumes/Trinos/Learning/PointofTwo/Po2/app/globals.css:1:1: Can't resolve '@/app/globals.css' in '/Volumes/Trinos/Learning/PointofTwo/Po2/app'
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (/Volumes/Trinos/Learning/PointofTwo/Po2/node_modules/@tailwindcss/postcss/dist/index.js:10:6912)]
+    [at process.processTicksAndRejections (node:internal/process/task_queues:105:5)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+[00:00:25.572] Server  LOG     
+
+[Clerk]: You are running in keyless mode.
+You can claim your keys by visiting https://dashboard.clerk.com/apps/claim?token=63m8fdbz660wr374rabyim5kdau3jl8wyam1ffyt&return_url=http%3A%2F%2Flocalhost%3A3000%2F
+
+[00:00:25.819] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:26.662] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:00:51.246] Browser ERROR   [1m[36m[Clerk Debug][0m [2m2025-11-09T08:29:24.970Z[0m [31mERROR[0m[90m[fapiClient][0m: [37mrequest failed[0m[2m {"method":"POST","path":"/client/sign_ins","status":422}[0m
+[00:01:11.768] Server  LOG        Reload env: .env
+[00:08:47.098] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:47.116] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:47.125] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:47.197] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:47.208] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:47.215] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:47.507] Server  LOG      ✓ Compiled in 345ms
+[00:08:48.778] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:50.938] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:08:59.488] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:59.495] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:08:59.501] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:09:11.424] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:11.532] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:09:15.405] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:15.514] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:09:27.213] Browser ERROR   [1m[36m[Clerk Debug][0m [2m2025-11-09T08:38:00.954Z[0m [31mERROR[0m[90m[fapiClient][0m: [37mrequest failed[0m[2m {"method":"POST","path":"/client/sign_ins","status":422}[0m
+[00:09:59.471] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:59.582] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:10:09.072] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:09.180] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:42:07.263] Server  LOG     
+
+[Clerk]: You are running in keyless mode.
+You can claim your keys by visiting https://dashboard.clerk.com/apps/claim?token=63m8fdbz660wr374rabyim5kdau3jl8wyam1ffyt&return_url=http%3A%2F%2Flocalhost%3A3000%2F
+
+[00:42:07.378] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:42:07.592] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:42:13.507] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:42:13.607] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:42:31.078] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:42:31.186] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:43:06.327] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:43:06.440] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:43:32.793] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:32.801] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:32.808] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:33.430] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:43:35.415] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:43:35.988] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:35.996] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:36.001] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:36.233] Server  ERROR    ⨯ ReferenceError: ClerkProvider is not defined
+[00:43:36.279] Server  ERROR    ⨯ ReferenceError: ClerkProvider is not defined
+[00:43:36.293] Server  LOG      ✓ Compiled in 0ms
+[00:43:36.317] Server  ERROR    ⨯ ReferenceError: ClerkProvider is not defined
+[00:43:36.442] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:43:38.415] Browser ERROR   uncaughtError: ReferenceError: ClerkProvider is not defined
+[00:43:38.415] Browser ERROR   uncaughtError: TypeError: Failed to execute 'measure' on 'Performance': '​RootLayout' cannot have a negative time stamp.
+[00:43:40.580] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:40.585] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:40.589] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:43:47.961] Server  ERROR    ⨯ ReferenceError: ClerkProvider is not defined
+[00:43:48.083] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:43:48.083] Browser ERROR   uncaughtError: ReferenceError: ClerkProvider is not defined
+[00:43:48.271] Browser ERROR   uncaughtError: TypeError: Failed to execute 'measure' on 'Performance': '​RootLayout' cannot have a negative time stamp.
+[00:44:03.027] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:44:03.062] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:44:03.070] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:44:03.100] Server  LOG      ✓ Compiled in 81ms
+[00:44:03.548] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:44:03.655] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:44:07.245] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:44:07.251] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:44:07.260] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:46:38.474] Server  ERROR   Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:46:38.480] Server  ERROR    ⨯ "unhandledRejection:" Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:46:38.487] Server  ERROR    ⨯ "unhandledRejection: " Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected. Please use "./proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:47:20.303] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:47:20.517] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:48:37.081] Server  LOG      ✓ Compiled in 34ms
+[00:48:47.849] Server  LOG      ✓ Compiled in 372ms
+[00:48:47.952] Browser ERROR   ./app/layout.tsx:19:14
+Ecmascript file had an error
+  17 | });
+  18 |
+> 19 | export const metadata: Metadata = {
+     |              ^^^^^^^^
+  20 |   title: "Create Next App",
+  21 |   description: "Generated by create next app",
+  22 | };
+
+You are attempting to export "metadata" from a component marked with "use client", which is disallowed. Either remove the export, or the "use client" directive. Read more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Client Component Browser:
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/layout.tsx [Client Component SSR]
+    ./app/layout.tsx [Server Component]
+[00:48:51.007] Browser ERROR   ./app/layout.tsx:19:14
+Ecmascript file had an error
+  17 | });
+  18 |
+> 19 | export const metadata: Metadata = {
+     |              ^^^^^^^^
+  20 |   title: "Create Next App",
+  21 |   description: "Generated by create next app",
+  22 | };
+
+You are attempting to export "metadata" from a component marked with "use client", which is disallowed. Either remove the export, or the "use client" directive. Read more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Client Component Browser:
+    ./app/layout.tsx [Client Component Browser]
+    ./app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/layout.tsx [Client Component SSR]
+    ./app/layout.tsx [Server Component]
+[00:49:15.388] Server  LOG      ✓ Compiled in 32ms
+[00:49:15.881] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:49:16.234] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:50:50.903] Server  LOG        Reload env: .env
+[00:50:51.442] Server  LOG      ✓ Compiled in 382ms
