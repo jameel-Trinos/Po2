@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Link from "next/link";
 import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { user, isLoaded } = useUser();
@@ -52,26 +51,15 @@ export default function Home() {
             className="mt-8 flex flex-col sm:flex-row gap-4"
           >
             <SignInButton mode="modal">
-              <button className="inline-flex items-center justify-center rounded-full text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-blue-600 text-white hover:bg-blue-700 h-12 px-6 py-2 shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
+              <Button size="lg" className="rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl">
                 Sign In
-              </button>
+              </Button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <button className="inline-flex items-center justify-center rounded-full text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900 h-12 px-6 py-2 shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
+              <Button size="lg" variant="outline" className="rounded-full border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900 shadow-lg hover:shadow-xl">
                 Sign Up
-              </button>
+              </Button>
             </SignUpButton>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="rounded-3xl border border-dashed border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-card-foreground shadow-2xl flex flex-col items-center justify-center p-10 text-center text-black dark:text-white transition-colors duration-500 mt-12 w-full max-w-lg"
-          >
-            <h3 className="text-2xl font-semibold mb-6">Want to kickstart a new project?</h3>
-            <Link href="/upload" className="inline-flex items-center justify-center rounded-full text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-green-500 text-white hover:bg-green-600 h-12 px-6 py-2 shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-300">
-              Upload a document
-            </Link>
           </motion.div>
         </div>
       </motion.div>
