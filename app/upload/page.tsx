@@ -23,6 +23,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Separator } from '@/components/ui/separator';
 
 // Set the worker source for pdfjs-dist (will be set after dynamic import)
 // pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs'; // Remove direct setting
@@ -96,13 +98,24 @@ const UploadPage: React.FC<{}> = () => {
   const [fundType, setFundType] = useState('Open-ended Fund');
 
   const [pdfjsLib, setPdfjsLib] = useState<any>(null);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
   useEffect(() => {
     // Dynamically import pdfjs-dist on the client-side
     const loadPdfjs = async () => {
-      const pdfjs = await import(/* webpackChunkName: "pdfjs-dist", ssr: false */ 'pdfjs-dist');
-      pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
-      setPdfjsLib(pdfjs);
+      try {
+        const pdfjs = await import(/* webpackChunkName: "pdfjs-dist", ssr: false */ 'pdfjs-dist');
+        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+        setPdfjsLib(pdfjs);
+      } catch (e: any) {
+        const message = e?.message || '';
+        if (message.includes('Invalid PDF structure') || e?.name === 'InvalidPDFException') {
+          setError('invalid pdf structure try to upload the valid pdf');
+          setErrorDialogOpen(true);
+        } else {
+          setError('Failed to load PDF library. Please refresh and try again.');
+        }
+      }
     };
     loadPdfjs();
   }, []);
@@ -170,21 +183,35 @@ const UploadPage: React.FC<{}> = () => {
 
         // Simulate a delay for a better UX, then complete with mock data
 
-        setTimeout(() => {
-
-          onUploadComplete(newDoc, extractedText);
-
-          router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
-
+        setTimeout(async () => {
+          // Convert file to base64 data URL for persistence
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result as string;
+            onUploadComplete(newDoc, extractedText, base64String);
+            router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+          };
+          reader.onerror = () => {
+            // Fallback to blob URL if base64 conversion fails
+            const objectUrl = URL.createObjectURL(file);
+            onUploadComplete(newDoc, extractedText, objectUrl);
+            router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+          };
+          reader.readAsDataURL(file);
         }, 1000);
 
         
 
-    } catch(e) {
+    } catch(e: any) {
 
         console.error("Failed to process file:", e);
 
-        setError("Could not read or process the file. Please ensure it's a valid PDF and try again.");
+        if ((e?.message || '').includes('Invalid PDF structure') || e?.name === 'InvalidPDFException') {
+          setError('invalid pdf structure try to upload the valid pdf');
+          setErrorDialogOpen(true);
+        } else {
+          setError("Could not read or process the file. Please ensure it's a valid PDF and try again.");
+        }
 
         setIsLoading(false);
 
@@ -243,6 +270,22 @@ const UploadPage: React.FC<{}> = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
+          <Dialog open={errorDialogOpen} onOpenChange={setErrorDialogOpen}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-red-500 dark:text-red-300">Upload Error</DialogTitle>
+              </DialogHeader>
+              <Separator className="my-2" />
+              <p className="text-sm text-gray-800 dark:text-gray-200">
+                {error || 'invalid pdf structure try to upload the valid pdf'}
+              </p>
+              <DialogFooter>
+                <Button variant="default" onClick={() => setErrorDialogOpen(false)}>
+                  OK
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -16 }}

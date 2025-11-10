@@ -198,11 +198,33 @@ const AppContextProvider = ({ children })=>{
         ;
         return new Map();
     });
+    const [documentPdfUrlMap, setDocumentPdfUrlMap] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        return new Map();
+    });
+    const [documentsMap, setDocumentsMap] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        return new Map();
+    });
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
         ;
     }, [
         documentContentMap
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+    }, [
+        documentPdfUrlMap
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+    }, [
+        documentsMap
     ]);
     const navigateTo = (view)=>{
         setCurrentView(view);
@@ -210,24 +232,57 @@ const AppContextProvider = ({ children })=>{
         // For this example, we'll just update the state
         console.log(`Navigating to: ${view}`);
     };
-    const onUploadComplete = (newDoc, content)=>{
+    const onUploadComplete = (newDoc, content, pdfUrl)=>{
         setDocumentContentMap((prevMap)=>new Map(prevMap.set(newDoc.id, content)));
+        if (pdfUrl) {
+            setDocumentPdfUrlMap((prevMap)=>new Map(prevMap.set(newDoc.id, pdfUrl)));
+        }
+        setDocumentsMap((prevMap)=>new Map(prevMap.set(newDoc.id, newDoc)));
         console.log("Upload Complete!", newDoc);
         navigateTo('dashboard'); // Example: navigate to dashboard after upload
     };
     const getDocumentContent = (documentId)=>{
         return documentContentMap.get(documentId);
     };
+    const getDocumentPdfUrl = (documentId)=>{
+        return documentPdfUrlMap.get(documentId);
+    };
+    const getDocument = (documentId)=>{
+        return documentsMap.get(documentId);
+    };
+    const saveProjectAsDraft = (projectName, documentId)=>{
+        const existingDoc = documentsMap.get(documentId);
+        const project = {
+            id: documentId,
+            name: projectName,
+            status: 'DRAFT',
+            lastActivity: new Date().toISOString(),
+            collaborators: existingDoc ? 4 : 0,
+            documentId: documentId
+        };
+        // Store projects in localStorage
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+    };
+    const getProjects = ()=>{
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        return [];
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AppContext.Provider, {
         value: {
             navigateTo,
             onUploadComplete,
-            getDocumentContent
+            getDocumentContent,
+            getDocumentPdfUrl,
+            saveProjectAsDraft,
+            getProjects,
+            getDocument
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/lib/AppContext.tsx",
-        lineNumber: 48,
+        lineNumber: 137,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -273,35 +328,35 @@ function RootLayout({ children }) {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ThemeSwitcher$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ThemeSwitcher"], {}, void 0, false, {
                             fileName: "[project]/app/layout.tsx",
-                            lineNumber: 34,
+                            lineNumber: 35,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$AppContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AppContextProvider"], {
                             children: children
                         }, void 0, false, {
                             fileName: "[project]/app/layout.tsx",
-                            lineNumber: 35,
+                            lineNumber: 36,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/layout.tsx",
-                    lineNumber: 33,
+                    lineNumber: 34,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/layout.tsx",
-                lineNumber: 30,
+                lineNumber: 31,
                 columnNumber: 9
             }, this)
         }, "app-html", false, {
             fileName: "[project]/app/layout.tsx",
-            lineNumber: 29,
+            lineNumber: 30,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/layout.tsx",
-        lineNumber: 28,
+        lineNumber: 29,
         columnNumber: 5
     }, this);
 }

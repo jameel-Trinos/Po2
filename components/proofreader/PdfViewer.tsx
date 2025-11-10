@@ -8,6 +8,7 @@ interface PdfViewerProps {
   selectedSuggestion: Suggestion | null;
   onSuggestionClick: (suggestion: Suggestion | null) => void;
   onApplyEdit: (pageNumber: number, originalText: string, newText: string) => void;
+  pdfUrl?: string | null;
 }
 
 const PdfViewer: React.FC<PdfViewerProps> = ({
@@ -16,6 +17,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   selectedSuggestion,
   onSuggestionClick,
   onApplyEdit,
+  pdfUrl,
 }) => {
   const viewerRef = useRef<HTMLDivElement>(null);
   const [activeHighlightBox, setActiveHighlightBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
@@ -95,6 +97,15 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   return (
     <div ref={viewerRef} className="relative p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-inner min-h-[500px]">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Document Content</h2>
+      {pdfUrl ? (
+        <div className="rounded-md overflow-hidden border border-zinc-200 dark:border-zinc-700">
+          <iframe
+            src={pdfUrl}
+            className="w-full h-[75vh] bg-white dark:bg-zinc-900"
+            title="Original PDF"
+          />
+        </div>
+      ) : null}
       <pre className="whitespace-pre-wrap font-mono text-gray-700 dark:text-gray-300 text-sm">
         {extractedText.split(/--- PAGE \d+ ---\n/).map((pageContent, index) => {
           if (index === 0 && !pageContent.includes('---')) return null;

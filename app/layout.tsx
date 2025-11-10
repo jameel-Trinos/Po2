@@ -8,6 +8,7 @@ import { ThemeProvider } from 'next-themes';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { Providers } from './providers';
 import { AppContextProvider } from '../lib/AppContext';
+import AuthenticatedLayout from '@/components/AuthenticatedLayout';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,9 @@ export default function RootLayout({
           <Providers>
             <ThemeSwitcher />
             <AppContextProvider>
-              {children}
+              <AuthenticatedLayout>
+                {children}
+              </AuthenticatedLayout>
             </AppContextProvider>
           </Providers>
         </body>
