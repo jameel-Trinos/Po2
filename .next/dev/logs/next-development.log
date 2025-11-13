@@ -1,101 +1,627 @@
-[00:00:01.970] Server  LOG      ✓ Ready in 1450ms
-[00:00:09.761] Server  LOG      ○ Compiling /editor ...
-[00:00:10.973] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:11.190] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:00:32.843] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:33.136] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:01:07.158] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:07.383] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:02:28.905] Server  LOG      ✓ Compiled in 1208ms
-[00:02:44.936] Server  LOG      ✓ Compiled in 1100ms
-[00:02:50.277] Server  LOG      ✓ Compiled in 1271ms
-[00:03:31.999] Browser LOG     Upload Complete! {"id":"doc-1762799085951","lastUpdated":"2025-11-10","projectName":"New Marketing Document","status":"In Review","title":"magic","type":"Fact Sheet"}
-[00:03:31.999] Browser LOG     Navigating to: dashboard
-[00:06:39.327] Server  LOG      ✓ Compiled in 1380ms
-[00:06:42.094] Server  LOG      ✓ Compiled in 1364ms
-[00:06:44.767] Server  LOG      ✓ Compiled in 1387ms
-[00:06:47.361] Server  LOG      ✓ Compiled in 1334ms
-[00:06:52.153] Server  LOG      ✓ Compiled in 1139ms
-[00:07:13.838] Server  LOG      ✓ Compiled in 1426ms
-[00:07:18.903] Server  LOG      ✓ Compiled in 1351ms
-[00:07:21.677] Server  LOG      ✓ Compiled in 1138ms
-[00:07:27.643] Server  LOG      ✓ Compiled in 1062ms
-[00:07:33.219] Server  LOG      ✓ Compiled in 1234ms
-[00:07:42.488] Server  LOG      ✓ Compiled in 920ms
-[00:07:48.882] Server  LOG      ✓ Compiled in 1085ms
-[00:07:57.127] Server  LOG      ✓ Compiled in 940ms
-[00:08:08.556] Server  LOG      ✓ Compiled in 577ms
-[00:08:22.095] Server  LOG      ✓ Compiled in 705ms
-[00:10:59.045] Browser LOG     Upload Complete! {"id":"doc-1762799532991","lastUpdated":"2025-11-10","projectName":"Magic","status":"In Review","title":"magic","type":"Fact Sheet"}
-[00:10:59.045] Browser LOG     Navigating to: dashboard
-[00:11:25.917] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:11:26.255] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:11:28.975] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:11:29.186] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:11:31.270] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:11:31.429] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:12:45.687] Server  LOG      ✓ Compiled in 1176ms
-[00:16:50.809] Server  LOG      ✓ Compiled in 1581ms
-[00:16:53.257] Server  LOG      ✓ Compiled in 1425ms
-[00:16:55.571] Server  LOG      ✓ Compiled in 1240ms
-[00:17:05.864] Server  LOG      ✓ Compiled in 1192ms
-[00:17:51.295] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:17:51.536] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:20:04.909] Server  LOG      ✓ Compiled in 1191ms
-[00:20:05.047] Browser ERROR   uncaughtError: ReferenceError: Separator is not defined
-[00:22:03.603] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
-[00:22:03.626] Server  LOG      ✓ Compiled in 1722ms
-[00:22:09.163] Server  ERROR   Error: aborted
-[00:22:09.166] Server  ERROR    ⨯ "uncaughtException:" Error: aborted
-[00:22:09.169] Server  ERROR    ⨯ "uncaughtException: " Error: aborted
-[00:22:09.287] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:22:09.608] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:22:24.847] Server  LOG      ✓ Compiled in 1012ms
-[00:22:37.863] Server  LOG      ✓ Compiled in 915ms
-[00:23:45.619] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
-[00:23:45.725] Browser ERROR   Error analyzing content with Gemini: {}
-[00:23:45.725] Browser ERROR   {}
-[00:24:39.522] Server  LOG      ✓ Compiled in 1673ms
-[00:26:01.679] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
-[00:26:01.784] Browser ERROR   Error analyzing content with Gemini: {}
-[00:26:01.784] Browser ERROR   {}
-[00:26:26.366] Server  LOG      ✓ Compiled in 1363ms
-[00:27:29.417] Browser LOG     Upload Complete! {"id":"doc-1762800523471","lastUpdated":"2025-11-10","projectName":"New Marketing Document","status":"In Review","title":"magic","type":"Fact Sheet"}
-[00:27:29.418] Browser LOG     Navigating to: dashboard
-[00:27:32.391] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
-[00:27:32.614] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
-[00:27:32.619] Browser ERROR   Error analyzing content with Gemini: {}
-[00:27:32.619] Browser ERROR   {}
-[00:27:32.718] Browser ERROR   Error analyzing content with Gemini: {}
-[00:27:32.719] Browser ERROR   {}
-[00:31:27.165] Server  LOG      ✓ Compiled in 1628ms
-[00:31:52.175] Server  LOG      ✓ Compiled in 781ms
-[00:32:02.211] Server  LOG      ✓ Compiled in 891ms
-[00:32:12.319] Server  LOG      ✓ Compiled in 816ms
-[00:32:29.052] Server  LOG      ✓ Compiled in 1042ms
-[00:32:43.079] Server  LOG      ✓ Compiled in 802ms
-[00:32:51.155] Server  LOG      ✓ Compiled in 798ms
-[00:35:18.778] Server  LOG      ✓ Compiled in 959ms
-[00:35:21.666] Server  LOG      ✓ Compiled in 1266ms
-[00:35:23.762] Server  LOG      ✓ Compiled in 1043ms
-[00:35:26.885] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:35:28.499] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:35:39.149] Server  LOG      ✓ Compiled in 835ms
-[00:36:07.182] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:36:07.894] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:36:09.824] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:36:09.943] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:36:12.984] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:36:13.200] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:36:15.279] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:36:15.389] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
-[00:36:45.978] Browser LOG     Upload Complete! {"id":"doc-1762801079952","lastUpdated":"2025-11-10","projectName":"New Marketing Document","status":"In Review","title":"magic","type":"Fact Sheet"}
-[00:36:45.978] Browser LOG     Navigating to: dashboard
-[00:36:56.874] Server  ERROR   Error analyzing content with Gemini: Error: exception TypeError: fetch failed sending request
-[00:36:57.090] Server  ERROR   Error analyzing content with Gemini: Error: exception TypeError: fetch failed sending request
-[00:36:57.094] Browser ERROR   Error analyzing content with Gemini: {}
-[00:36:57.094] Browser ERROR   {}
-[00:36:57.195] Browser ERROR   Error analyzing content with Gemini: {}
-[00:36:57.195] Browser ERROR   {}
-[00:38:42.545] Server  LOG      ✓ Compiled in 1549ms
-[00:41:36.029] Server  LOG      ✓ Compiled in 1238ms
+[00:00:02.212] Server  LOG      ✓ Ready in 1564ms
+[00:03:07.658] Server  LOG      ○ Compiling /editor ...
+[00:03:10.910] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:03:11.180] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:03:11.181] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:03:11.181] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:03:11.656] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:03:11.656] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:03:12.045] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:12.045] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:12.045] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:03:18.845] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:18.845] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:18.845] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:03:19.317] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:19.318] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:19.318] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:03:19.497] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:19.497] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:32.768] Server  LOG     Received file: {}
+[00:03:32.770] Server  LOG     Reading PDF file...
+[00:03:32.771] Server  LOG     PDF file read, size: 79007 "bytes"
+[00:03:32.771] Server  LOG     Parsing PDF document...
+[00:03:34.075] Server  ERROR   Failed to parse PDF: Error: Setting up fake worker failed: "Cannot find module '/Volumes/Trinos/Learning/PointofTwo/Po2/.next/dev/server/chunks/pdf.worker.mjs' imported from /Volumes/Trinos/Learning/PointofTwo/Po2/.next/dev/server/chunks/f7a54_pdfjs-dist_legacy_build_pdf_mjs_beaf964f._.js".
+[00:03:34.184] Browser ERROR   Conversion API error: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"Setting up fake worker failed: \"Cannot find module '/Volumes/Trinos/Learning/PointofTwo/Po2/.next/dev/server/chunks/pdf.worker.mjs' imported from /Volumes/Trinos/Learning/PointofTwo/Po2/.next/dev/server/chunks/f7a54_pdfjs-dist_legacy_build_pdf_mjs_beaf964f._.js\"."}
+[00:03:34.184] Browser ERROR   Error converting PDF to Word: {}
+[00:03:58.013] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:03:58.013] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:03:58.013] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:03:58.013] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:03:58.014] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:03:58.356] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:58.356] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:03:58.356] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:05:36.460] Server  LOG      ✓ Compiled in 993ms
+[00:05:36.963] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:05:37.325] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:05:37.325] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:05:37.325] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:06:09.160] Server  LOG     Received file: {}
+[00:06:09.160] Server  LOG     Reading PDF file...
+[00:06:09.161] Server  LOG     PDF file read, size: 79007 "bytes"
+[00:06:09.161] Server  LOG     Parsing PDF document...
+[00:06:09.408] Server  ERROR   Failed to parse PDF: Error: pdf-parse function not found in module exports
+[00:06:09.519] Browser ERROR   [PDF to Word] Conversion failed: {"contentType":"application/json","status":400,"statusText":"Bad Request"}
+[00:06:09.519] Browser LOG     [PDF to Word] Error response body: {"error":"Failed to parse PDF","message":"pdf-parse function not found in module exports","details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format."}
+[00:06:09.519] Browser ERROR   [PDF to Word] Parsed error data: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"pdf-parse function not found in module exports"}
+[00:06:09.519] Browser ERROR   [PDF to Word] Final error message: pdf-parse function not found in module exports
+[00:06:09.519] Browser ERROR   Error converting PDF to Word: {}
+[00:09:34.504] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:36.319] Browser LOG     [EditorPage] Loading document: doc-1762999396058
+[00:09:36.319] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:09:36.319] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:09:36.319] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:09:36.319] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:09:37.615] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
+[00:09:38.319] Browser ERROR   Error analyzing content with Gemini: {}
+[00:09:38.319] Browser ERROR   {}
+[00:09:40.517] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:40.921] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:09:40.921] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:09:40.921] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:09:41.435] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:09:41.435] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:09:41.768] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:09:41.768] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:09:41.768] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:09:44.820] Server  LOG     Received file: {}
+[00:09:44.820] Server  LOG     Reading PDF file...
+[00:09:44.820] Server  LOG     PDF file read, size: 79007 "bytes"
+[00:09:44.821] Server  LOG     Parsing PDF document...
+[00:09:44.916] Server  ERROR   Failed to parse PDF: Error: pdf-parse function not found in module exports
+[00:09:45.025] Browser ERROR   [PDF to Word] Conversion failed: {"contentType":"application/json","status":400,"statusText":"Bad Request"}
+[00:09:45.025] Browser LOG     [PDF to Word] Error response body: {"error":"Failed to parse PDF","message":"pdf-parse function not found in module exports","details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format."}
+[00:09:45.025] Browser ERROR   [PDF to Word] Parsed error data: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"pdf-parse function not found in module exports"}
+[00:09:45.025] Browser ERROR   [PDF to Word] Final error message: pdf-parse function not found in module exports
+[00:09:45.025] Browser ERROR   Error converting PDF to Word: {}
+[00:10:32.491] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:32.820] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:10:32.820] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:10:32.820] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:10:33.215] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:10:33.215] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:10:33.580] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:10:33.581] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:10:33.581] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:10:40.375] Server  LOG     Received file: {}
+[00:10:40.375] Server  LOG     Reading PDF file...
+[00:10:40.377] Server  LOG     PDF file read, size: 79007 "bytes"
+[00:10:40.378] Server  LOG     Parsing PDF document...
+[00:10:40.523] Server  ERROR   Failed to parse PDF: Error: pdf-parse function not found in module exports
+[00:10:40.632] Browser ERROR   [PDF to Word] Conversion failed: {"contentType":"application/json","status":400,"statusText":"Bad Request"}
+[00:10:40.632] Browser LOG     [PDF to Word] Error response body: {"error":"Failed to parse PDF","message":"pdf-parse function not found in module exports","details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format."}
+[00:10:40.632] Browser ERROR   [PDF to Word] Parsed error data: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"pdf-parse function not found in module exports"}
+[00:10:40.632] Browser ERROR   [PDF to Word] Final error message: pdf-parse function not found in module exports
+[00:10:40.632] Browser ERROR   Error converting PDF to Word: {}
+[00:12:45.360] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:12:45.563] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:12:45.673] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:12:45.673] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:12:46.198] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:12:46.198] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:12:46.620] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:12:46.620] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:12:46.620] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:12:56.326] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:12:56.445] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:12:56.656] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:12:56.656] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:13:13.772] Server  LOG     Received file: {}
+[00:13:13.773] Server  LOG     Reading PDF file...
+[00:13:13.775] Server  LOG     PDF file read, size: 79007 "bytes"
+[00:13:13.775] Server  LOG     Parsing PDF document...
+[00:13:13.824] Server  WARN    Warning: Cannot load "@napi-rs/canvas" package: "Error: Cannot find module '@napi-rs/canvas'
+Require stack:
+- /ROOT/node_modules/pdf-parse/dist/pdf-parse/cjs/index.cjs".
+[00:13:14.006] Server  ERROR   Failed to parse PDF: Error: pdf-parse function not found in module exports
+[00:13:14.117] Browser ERROR   [PDF to Word] Conversion failed: {"contentType":"application/json","status":400,"statusText":"Bad Request"}
+[00:13:14.117] Browser LOG     [PDF to Word] Error response body: {"error":"Failed to parse PDF","message":"pdf-parse function not found in module exports","details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format."}
+[00:13:14.117] Browser ERROR   [PDF to Word] Parsed error data: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"pdf-parse function not found in module exports"}
+[00:13:14.117] Browser ERROR   [PDF to Word] Final error message: pdf-parse function not found in module exports
+[00:13:14.117] Browser ERROR   Error converting PDF to Word: {}
+[00:33:17.468] Server  LOG      ✓ Compiled in 633ms
+[00:33:19.302] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:33:19.317] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:38:13.820] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:38:13.998] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:38:13.998] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:38:13.998] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:38:20.985] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:38:21.243] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:38:21.243] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:38:21.243] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:38:21.759] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:38:21.760] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:38:22.121] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:38:22.121] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:38:22.121] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:38:31.170] Server  LOG     Received file: {}
+[00:38:31.171] Server  LOG     Reading PDF file...
+[00:38:31.171] Server  LOG     PDF file read, size: 79007 "bytes"
+[00:38:31.171] Server  LOG     Parsing PDF document...
+[00:38:31.418] Server  ERROR   Failed to parse PDF: Error: pdf-parse function not found or invalid export
+[00:38:31.532] Browser ERROR   [PDF to Word] Conversion failed: {"contentType":"application/json","status":400,"statusText":"Bad Request"}
+[00:38:31.532] Browser LOG     [PDF to Word] Error response body: {"error":"Failed to parse PDF","message":"pdf-parse function not found or invalid export","details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format."}
+[00:38:31.532] Browser ERROR   [PDF to Word] Parsed error data: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"pdf-parse function not found or invalid export"}
+[00:38:31.532] Browser ERROR   [PDF to Word] Final error message: pdf-parse function not found or invalid export
+[00:38:31.532] Browser ERROR   Error converting PDF to Word: {}
+[00:39:05.531] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:39:05.531] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:39:05.640] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:41:38.084] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:41:38.338] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:49:36.255] Server  LOG      ✓ Compiled in 504ms
+[00:49:37.316] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:37.317] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:37.317] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:37.317] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:37.317] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:49:37.317] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:49:39.303] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:39.303] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:41.492] Server  LOG      ✓ Compiled in 504ms
+[00:49:41.814] Server  LOG      ✓ Compiled in 0ms
+[00:49:44.302] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:44.302] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:44.302] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:44.302] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:44.302] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:44.302] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:44.302] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:49:44.302] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:49:44.302] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:49:44.302] Browser LOG     [PdfViewerPdfJs] Canvas not ready for page 1, skipping render
+[00:49:44.302] Browser LOG     [PdfViewerPdfJs] Canvas not ready for page 2, skipping render
+[00:50:07.193] Server  LOG      ✓ Compiled in 1131ms
+[00:50:09.635] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:50:09.635] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:50:10.078] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:50:10.078] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:50:10.078] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:50:10.078] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:50:11.701] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:50:11.701] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:50:19.953] Server  LOG      ✓ Compiled in 1037ms
+[00:51:10.604] Server  LOG      ✓ Compiled in 1354ms
+[00:58:23.950] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:58:24.247] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:58:24.247] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[00:58:24.247] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[00:58:24.762] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:58:24.762] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[00:58:25.119] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:58:25.119] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[00:58:25.119] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[00:59:04.431] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:59:04.686] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:59:30.953] Server  ERROR   Error analyzing document: Error: Could not find file in options
+[01:00:10.125] Server  ERROR   Error analyzing document: Error: Could not find file in options
+[01:02:50.279] Server  LOG      ✓ Compiled in 798ms
+[01:03:46.764] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:03:47.026] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[01:03:56.294] Server  LOG     Starting document analysis...
+[01:03:56.295] Server  LOG     File received: "Aravindh Kumaran Umapathy Resume.docx" "Size:" 16372 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[01:03:56.295] Server  LOG     Converting file to array buffer...
+[01:03:56.296] Server  LOG     Array buffer size: 16372
+[01:03:56.296] Server  LOG     Converting to Buffer...
+[01:03:56.296] Server  LOG     Buffer size: 16372
+[01:03:56.296] Server  LOG     Extracting raw text with mammoth...
+[01:03:56.408] Server  LOG     Extracted text length: 5889
+[01:03:56.408] Server  LOG     Converting to HTML with mammoth...
+[01:03:56.478] Server  LOG     HTML content length: 6709
+[01:03:57.723] Browser ERROR   All created TinyMCE editors are configured to be read-only.
+[01:03:57.723] Browser WARN    A valid API key is required to continue using TinyMCE.
+
+*Please alert the admin* to check the current API key.
+
+Read to learn more:
+https://www.tiny.cloud/docs/tinymce/latest/invalid-api-key/?utm_campaign=no_api_key_learn_more&utm_source=tiny&utm_medium=referral
+
+↓↓↓↓↓ ATTENTION ADMINS ↓↓↓↓↓
+Please include these details in Tiny Cloud support requests.
+Resolved API key: no-api-key
+Editor read-only?: yes
+Origin: http://localhost:3000
+Tiny Cloud entry URL: https://cdn.tiny.cloud/1/no-api-key/tinymce/8/tinymce.min.js
+↑↑↑↑↑ ---------------- ↑↑↑↑↑
+[01:03:57.723] Browser WARN    The following deprecated features are currently enabled and have been removed in TinyMCE 8.0. These features will no longer work and should be removed from the TinyMCE configuration. See https://www.tiny.cloud/docs/tinymce/8/migration-from-7x/ for more information.
+
+Plugins:
+- colorpicker
+- textcolor
+[01:03:58.007] Browser ERROR   Failed to load plugin: paste from url plugins/paste/plugin.min.js
+[01:03:58.007] Browser ERROR   Failed to load plugin: textcolor from url plugins/textcolor/plugin.min.js
+[01:03:58.007] Browser ERROR   Failed to load plugin: colorpicker from url plugins/colorpicker/plugin.min.js
+[01:03:58.712] Browser ERROR   Failed to load plugin: textpattern from url plugins/textpattern/plugin.min.js
+[01:03:59.544] Browser ERROR   The editor is disabled because the API key could not be validated by the API key validation server [type: get_license_online_invalid_error, status: 404]. Read more: https://www.tiny.cloud/docs/tinymce/latest/license-key/
+[01:29:30.399] Server  LOG      ✓ Compiled in 764ms
+[01:33:43.130] Server  LOG        Reload env: .env.local
+[01:33:43.622] Server  LOG      ✓ Compiled in 455ms
+[01:34:11.721] Server  LOG        Reload env: .env.local
+[01:34:42.548] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:34:42.997] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[01:34:51.758] Server  LOG     Starting document analysis...
+[01:34:51.760] Server  LOG     File received: "Aravindh Kumaran Umapathy Resume.docx" "Size:" 16372 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[01:34:51.760] Server  LOG     Converting file to array buffer...
+[01:34:51.760] Server  LOG     Array buffer size: 16372
+[01:34:51.760] Server  LOG     Converting to Buffer...
+[01:34:51.761] Server  LOG     Buffer size: 16372
+[01:34:51.761] Server  LOG     Extracting raw text with mammoth...
+[01:34:51.862] Server  LOG     Extracted text length: 5889
+[01:34:51.862] Server  LOG     Converting to HTML with mammoth...
+[01:34:51.933] Server  LOG     HTML content length: 6709
+[01:34:53.181] Browser WARN    The following deprecated features are currently enabled and have been removed in TinyMCE 8.0. These features will no longer work and should be removed from the TinyMCE configuration. See https://www.tiny.cloud/docs/tinymce/8/migration-from-7x/ for more information.
+
+Plugins:
+- colorpicker
+- textcolor
+[01:34:53.462] Browser ERROR   Failed to load plugin: textpattern from url plugins/textpattern/plugin.min.js
+[01:34:53.462] Browser ERROR   Failed to load plugin: colorpicker from url plugins/colorpicker/plugin.min.js
+[01:34:53.824] Browser ERROR   Failed to load plugin: textcolor from url plugins/textcolor/plugin.min.js
+[01:34:53.824] Browser ERROR   Failed to load plugin: paste from url plugins/paste/plugin.min.js
+[01:35:03.124] Browser WARN    Text not found in editor: investment opportunity
+[01:35:03.124] Browser WARN    Text not found in editor: investment opportunity
+[01:35:21.618] Browser WARN    Text not found in editor: investment opportunity
+[01:35:23.003] Browser WARN    Text not found in editor: investment opportunity
+[01:35:29.426] Browser WARN    Text not found in editor: analyze
+[01:35:29.426] Browser WARN    Text not found in editor: analyze
+[01:35:50.814] Browser WARN    Text not found in editor: investment opportunity
+[01:35:50.814] Browser WARN    Text not found in editor: investment opportunity
+[01:36:15.705] Browser LOG     Upload Complete! {"id":"doc-1763016354228","lastUpdated":"2025-11-13","projectName":"New Marketing Document","status":"In Review","title":"sample_compliance_5pages","type":"Fact Sheet"}
+[01:36:15.705] Browser LOG     Navigating to: dashboard
+[01:36:15.902] Browser LOG     [EditorPage] Loading document: doc-1763016354228
+[01:36:15.902] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[01:36:15.902] Browser LOG     [EditorPage] Loading document: doc-1763016354228
+[01:36:15.902] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[01:36:16.464] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 5 pages
+[01:36:16.464] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 5 pages
+[01:36:16.709] Browser LOG     [PdfViewerPdfJs] Rendered page 1/5
+[01:36:16.709] Browser LOG     [PdfViewerPdfJs] Rendered page 1/5
+[01:36:16.709] Browser LOG     [PdfViewerPdfJs] Rendered page 2/5
+[01:36:39.732] Browser LOG     [PdfViewerPdfJs] Rendered page 3/5
+[01:36:47.485] Browser LOG     [PdfViewerPdfJs] Rendered page 4/5
+[01:36:53.992] Browser LOG     [PdfViewerPdfJs] Rendered page 1/5
+[01:36:53.992] Browser LOG     [PdfViewerPdfJs] Rendered page 1/5
+[01:36:53.992] Browser LOG     [PdfViewerPdfJs] Rendered page 2/5
+[01:36:54.104] Browser LOG     [PdfViewerPdfJs] Rendered page 3/5
+[01:36:54.629] Browser LOG     [PdfViewerPdfJs] Rendered page 2/5
+[01:36:54.629] Browser LOG     [PdfViewerPdfJs] Rendered page 1/5
+[01:36:54.629] Browser LOG     [PdfViewerPdfJs] Rendered page 3/5
+[01:36:54.737] Browser LOG     [PdfViewerPdfJs] Rendered page 4/5
+[01:36:57.298] Browser LOG     [PdfViewerPdfJs] Rendered page 3/5
+[01:36:57.298] Browser LOG     [PdfViewerPdfJs] Rendered page 2/5
+[01:36:57.298] Browser LOG     [PdfViewerPdfJs] Rendered page 4/5
+[01:36:58.117] Browser LOG     [PdfViewerPdfJs] Rendered page 3/5
+[01:36:58.117] Browser LOG     [PdfViewerPdfJs] Rendered page 2/5
+[01:36:58.117] Browser LOG     [PdfViewerPdfJs] Rendered page 4/5
+[01:36:58.772] Browser LOG     [PdfViewerPdfJs] Rendered page 3/5
+[01:36:58.772] Browser LOG     [PdfViewerPdfJs] Rendered page 2/5
+[01:36:58.772] Browser LOG     [PdfViewerPdfJs] Rendered page 4/5
+[01:37:00.787] Browser LOG     [PdfViewerPdfJs] Rendered page 5/5
+[01:37:09.773] Server  LOG     Received file: {}
+[01:37:09.775] Server  LOG     Reading PDF file...
+[01:37:09.776] Server  LOG     PDF file read, size: 6553 "bytes"
+[01:37:09.777] Server  LOG     Parsing PDF document...
+[01:37:09.990] Server  ERROR   Failed to parse PDF: Error: pdf-parse function not found or invalid export
+[01:37:10.100] Browser ERROR   [PDF to Word] Conversion failed: {"contentType":"application/json","status":400,"statusText":"Bad Request"}
+[01:37:10.100] Browser LOG     [PDF to Word] Error response body: {"error":"Failed to parse PDF","message":"pdf-parse function not found or invalid export","details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format."}
+[01:37:10.100] Browser ERROR   [PDF to Word] Parsed error data: {"details":"The PDF file could not be parsed. It may be corrupted or in an unsupported format.","error":"Failed to parse PDF","message":"pdf-parse function not found or invalid export"}
+[01:37:10.100] Browser ERROR   [PDF to Word] Final error message: pdf-parse function not found or invalid export
+[01:37:10.100] Browser ERROR   Error converting PDF to Word: {}
+[01:41:40.748] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:41.083] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[01:42:08.618] Server  LOG     Starting document analysis...
+[01:42:08.619] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[01:42:08.619] Server  LOG     Converting file to array buffer...
+[01:42:08.619] Server  LOG     Array buffer size: 38035
+[01:42:08.619] Server  LOG     Converting to Buffer...
+[01:42:08.620] Server  LOG     Buffer size: 38035
+[01:42:08.621] Server  LOG     Extracting raw text with mammoth...
+[01:42:08.708] Server  LOG     Extracted text length: 2104
+[01:42:08.708] Server  LOG     Converting to HTML with mammoth...
+[01:42:08.785] Server  LOG     HTML content length: 2658
+[01:42:08.995] Browser WARN    The following deprecated features are currently enabled and have been removed in TinyMCE 8.0. These features will no longer work and should be removed from the TinyMCE configuration. See https://www.tiny.cloud/docs/tinymce/8/migration-from-7x/ for more information.
+
+Plugins:
+- colorpicker
+- textcolor
+[01:42:09.416] Browser ERROR   Failed to load plugin: paste from url plugins/paste/plugin.min.js
+[01:42:09.416] Browser ERROR   Failed to load plugin: textpattern from url plugins/textpattern/plugin.min.js
+[01:42:09.416] Browser ERROR   Failed to load plugin: textcolor from url plugins/textcolor/plugin.min.js
+[01:42:09.416] Browser ERROR   Failed to load plugin: colorpicker from url plugins/colorpicker/plugin.min.js
+[01:43:30.643] Server  LOG      ✓ Compiled in 856ms
+[01:44:47.112] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:44:47.489] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[01:45:01.395] Server  LOG     Starting document analysis...
+[01:45:01.396] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[01:45:01.396] Server  LOG     Converting file to array buffer...
+[01:45:01.396] Server  LOG     Array buffer size: 38035
+[01:45:01.397] Server  LOG     Converting to Buffer...
+[01:45:01.397] Server  LOG     Buffer size: 38035
+[01:45:01.397] Server  LOG     Extracting raw text with mammoth...
+[01:45:01.489] Server  LOG     Extracted text length: 2104
+[01:45:01.489] Server  LOG     Converting to HTML with mammoth...
+[01:45:01.562] Server  LOG     HTML content length: 2658
+[01:45:01.751] Browser WARN    The following deprecated features are currently enabled and have been removed in TinyMCE 8.0. These features will no longer work and should be removed from the TinyMCE configuration. See https://www.tiny.cloud/docs/tinymce/8/migration-from-7x/ for more information.
+
+Plugins:
+- colorpicker
+- textcolor
+[01:45:02.170] Browser ERROR   Failed to load plugin: textcolor from url plugins/textcolor/plugin.min.js
+[01:45:02.170] Browser ERROR   Failed to load plugin: colorpicker from url plugins/colorpicker/plugin.min.js
+[01:45:02.170] Browser ERROR   Failed to load plugin: textpattern from url plugins/textpattern/plugin.min.js
+[01:46:42.312] Server  LOG      ✓ Compiled in 643ms
+[01:49:58.201] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:49:58.616] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[01:50:11.178] Server  LOG     Starting document analysis...
+[01:50:11.179] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[01:50:11.179] Server  LOG     Converting file to array buffer...
+[01:50:11.180] Server  LOG     Array buffer size: 38035
+[01:50:11.180] Server  LOG     Converting to Buffer...
+[01:50:11.180] Server  LOG     Buffer size: 38035
+[01:50:11.180] Server  LOG     Extracting raw text with mammoth...
+[01:50:11.273] Server  LOG     Extracted text length: 2104
+[01:50:11.273] Server  LOG     Converting to HTML with mammoth...
+[01:50:11.345] Server  LOG     HTML content length: 2658
+[01:51:46.139] Browser WARN    Text not found in editor: analyze
+[01:51:46.139] Browser WARN    Text not found in editor: analyze
+[01:55:36.344] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:55:36.750] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[01:55:55.994] Server  LOG     Starting document analysis...
+[01:55:55.995] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[01:55:55.995] Server  LOG     Converting file to array buffer...
+[01:55:55.996] Server  LOG     Array buffer size: 38035
+[01:55:55.996] Server  LOG     Converting to Buffer...
+[01:55:55.996] Server  LOG     Buffer size: 38035
+[01:55:55.996] Server  LOG     Extracting raw text with mammoth...
+[01:55:56.066] Server  LOG     Extracted text length: 2104
+[01:55:56.066] Server  LOG     Converting to HTML with mammoth...
+[01:55:56.131] Server  LOG     HTML content length: 2658
+[02:01:09.112] Browser WARN    Text not found in editor: analyze
+[02:01:09.112] Browser WARN    Text not found in editor: analyze
+[02:01:15.702] Browser WARN    Text not found in editor: analyze
+[02:01:17.006] Browser WARN    Text not found in editor: analyze
+[02:01:28.061] Browser WARN    Text not found in editor: analyze
+[02:01:28.948] Browser WARN    Text not found in editor: analyze
+[02:01:30.354] Browser WARN    Text not found in editor: analyze
+[02:01:59.101] Browser WARN    Text not found in editor: analyze
+[02:02:02.608] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:02:02.888] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:02:26.885] Server  LOG     Starting document analysis...
+[02:02:26.892] Server  LOG     File received: "Jameel Resume.docx" "Size:" 2334336 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:02:26.892] Server  LOG     Converting file to array buffer...
+[02:02:26.896] Server  LOG     Array buffer size: 2334336
+[02:02:26.896] Server  LOG     Converting to Buffer...
+[02:02:26.896] Server  LOG     Buffer size: 2334336
+[02:02:26.896] Server  LOG     Extracting raw text with mammoth...
+[02:02:26.950] Server  LOG     Extracted text length: 3580
+[02:02:26.950] Server  LOG     Converting to HTML with mammoth...
+[02:02:27.010] Server  LOG     HTML content length: 4749
+[02:12:54.442] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:12:54.820] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:13:20.881] Server  LOG     Starting document analysis...
+[02:13:20.883] Server  LOG     File received: "Jameel Resume.docx" "Size:" 2334336 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:13:20.883] Server  LOG     Converting file to array buffer...
+[02:13:20.886] Server  LOG     Array buffer size: 2334336
+[02:13:20.886] Server  LOG     Converting to Buffer...
+[02:13:20.886] Server  LOG     Buffer size: 2334336
+[02:13:20.886] Server  LOG     Extracting raw text with mammoth...
+[02:13:20.947] Server  LOG     Extracted text length: 3580
+[02:13:20.947] Server  LOG     Converting to HTML with mammoth...
+[02:13:20.992] Server  LOG     HTML content length: 4749
+[02:14:04.892] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:14:05.133] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:14:22.824] Server  LOG     Starting document analysis...
+[02:14:22.824] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:14:22.825] Server  LOG     Converting file to array buffer...
+[02:14:22.825] Server  LOG     Array buffer size: 38035
+[02:14:22.825] Server  LOG     Converting to Buffer...
+[02:14:22.826] Server  LOG     Buffer size: 38035
+[02:14:22.826] Server  LOG     Extracting raw text with mammoth...
+[02:14:22.911] Server  LOG     Extracted text length: 2104
+[02:14:22.912] Server  LOG     Converting to HTML with mammoth...
+[02:14:22.980] Server  LOG     HTML content length: 2658
+[02:15:03.016] Browser ERROR   Error converting HTML to PDF: {}
+[02:15:03.016] Browser ERROR   Download error: {}
+[02:16:13.556] Server  LOG      ✓ Compiled in 661ms
+[02:16:24.040] Server  LOG      ✓ Compiled in 655ms
+[02:17:21.414] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:17:21.753] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:17:43.543] Server  LOG     Starting document analysis...
+[02:17:43.544] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:17:43.544] Server  LOG     Converting file to array buffer...
+[02:17:43.545] Server  LOG     Array buffer size: 38035
+[02:17:43.545] Server  LOG     Converting to Buffer...
+[02:17:43.545] Server  LOG     Buffer size: 38035
+[02:17:43.546] Server  LOG     Extracting raw text with mammoth...
+[02:17:43.655] Server  LOG     Extracted text length: 2104
+[02:17:43.655] Server  LOG     Converting to HTML with mammoth...
+[02:17:43.738] Server  LOG     HTML content length: 2658
+[02:26:43.701] Server  LOG      ✓ Compiled in 654ms
+[02:27:40.331] Server  LOG      ✓ Compiled in 759ms
+[02:39:51.773] Server  LOG      ✓ Compiled in 969ms
+[02:40:00.881] Server  LOG      ✓ Compiled in 804ms
+[02:40:12.620] Server  LOG      ✓ Compiled in 667ms
+[02:41:41.609] Server  LOG      ✓ Compiled in 805ms
+[02:45:21.267] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:45:21.608] Browser LOG     [EditorPage] Loading document: doc-1762996525318
+[02:45:21.608] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[02:45:21.608] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:45:22.109] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[02:45:22.109] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[02:45:22.477] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[02:45:22.477] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[02:45:22.477] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[02:45:30.266] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:45:30.403] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:45:49.969] Server  LOG     Starting document analysis...
+[02:45:49.971] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:45:49.971] Server  LOG     Converting file to array buffer...
+[02:45:49.972] Server  LOG     Array buffer size: 38035
+[02:45:49.972] Server  LOG     Converting to Buffer...
+[02:45:49.972] Server  LOG     Buffer size: 38035
+[02:45:49.972] Server  LOG     Extracting raw text with mammoth...
+[02:45:50.048] Server  LOG     Extracted text length: 2104
+[02:45:50.048] Server  LOG     Converting to HTML with mammoth...
+[02:45:50.124] Server  LOG     HTML content length: 2658
+[02:48:40.818] Server  LOG      ✓ Compiled in 1028ms
+[02:49:11.643] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:49:11.849] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:49:27.037] Server  LOG     Starting document analysis...
+[02:49:27.038] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:49:27.038] Server  LOG     Converting file to array buffer...
+[02:49:27.039] Server  LOG     Array buffer size: 38035
+[02:49:27.039] Server  LOG     Converting to Buffer...
+[02:49:27.039] Server  LOG     Buffer size: 38035
+[02:49:27.039] Server  LOG     Extracting raw text with mammoth...
+[02:49:27.171] Server  LOG     Extracted text length: 2104
+[02:49:27.171] Server  LOG     Converting to HTML with mammoth...
+[02:49:27.255] Server  LOG     HTML content length: 2658
+[02:51:01.556] Server  LOG      ✓ Compiled in 705ms
+[02:51:36.466] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:51:36.699] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:51:57.118] Server  LOG     Starting document analysis...
+[02:51:57.119] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:51:57.120] Server  LOG     Converting file to array buffer...
+[02:51:57.120] Server  LOG     Array buffer size: 38035
+[02:51:57.121] Server  LOG     Converting to Buffer...
+[02:51:57.121] Server  LOG     Buffer size: 38035
+[02:51:57.121] Server  LOG     Extracting raw text with mammoth...
+[02:51:57.204] Server  LOG     Extracted text length: 2104
+[02:51:57.204] Server  LOG     Converting to HTML with mammoth...
+[02:51:57.275] Server  LOG     HTML content length: 2658
+[02:53:03.414] Server  LOG      ✓ Compiled in 1320ms
+[02:53:29.293] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:53:29.470] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:53:39.863] Server  LOG     Starting document analysis...
+[02:53:39.864] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:53:39.865] Server  LOG     Converting file to array buffer...
+[02:53:39.865] Server  LOG     Array buffer size: 38035
+[02:53:39.866] Server  LOG     Converting to Buffer...
+[02:53:39.866] Server  LOG     Buffer size: 38035
+[02:53:39.866] Server  LOG     Extracting raw text with mammoth...
+[02:53:39.990] Server  LOG     Extracted text length: 2104
+[02:53:39.990] Server  LOG     Converting to HTML with mammoth...
+[02:53:40.072] Server  LOG     HTML content length: 2658
+[02:53:40.213] Browser WARN    The following deprecated features are currently enabled and have been removed in TinyMCE 8.0. These features will no longer work and should be removed from the TinyMCE configuration. See https://www.tiny.cloud/docs/tinymce/8/migration-from-7x/ for more information.
+
+Plugins:
+- template
+[02:53:40.213] Browser WARN    The following deprecated features are currently enabled and have been removed in TinyMCE 8.0. These features will no longer work and should be removed from the TinyMCE configuration. See https://www.tiny.cloud/docs/tinymce/8/migration-from-7x/ for more information.
+
+Plugins:
+- template
+[02:53:40.562] Browser ERROR   Failed to load plugin: textpattern from url plugins/textpattern/plugin.min.js
+[02:53:40.562] Browser ERROR   Failed to load plugin: imagetools from url plugins/imagetools/plugin.min.js
+[02:53:40.562] Browser ERROR   Failed to load plugin: template from url plugins/template/plugin.min.js
+[02:53:41.849] Browser ERROR   Failed to load plugin: hr from url plugins/hr/plugin.min.js
+[02:56:16.592] Server  LOG      ✓ Compiled in 1605ms
+[02:56:22.903] Server  LOG      ✓ Compiled in 1206ms
+[02:56:49.563] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:56:49.733] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[02:57:00.019] Server  LOG     Starting document analysis...
+[02:57:00.020] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[02:57:00.020] Server  LOG     Converting file to array buffer...
+[02:57:00.020] Server  LOG     Array buffer size: 38035
+[02:57:00.021] Server  LOG     Converting to Buffer...
+[02:57:00.021] Server  LOG     Buffer size: 38035
+[02:57:00.021] Server  LOG     Extracting raw text with mammoth...
+[02:57:00.104] Server  LOG     Extracted text length: 2104
+[02:57:00.104] Server  LOG     Converting to HTML with mammoth...
+[02:57:00.180] Server  LOG     HTML content length: 2658
+[03:54:40.561] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:54:40.783] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[03:54:56.853] Server  LOG     Starting document analysis...
+[03:54:56.854] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[03:54:56.855] Server  LOG     Converting file to array buffer...
+[03:54:56.855] Server  LOG     Array buffer size: 38035
+[03:54:56.856] Server  LOG     Converting to Buffer...
+[03:54:56.856] Server  LOG     Buffer size: 38035
+[03:54:56.856] Server  LOG     Extracting raw text with mammoth...
+[03:54:56.933] Server  LOG     Extracted text length: 2104
+[03:54:56.934] Server  LOG     Converting to HTML with mammoth...
+[03:54:57.004] Server  LOG     HTML content length: 2658
+[03:55:37.089] Server  LOG      ✓ Compiled in 1344ms
+[03:56:17.373] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:56:17.563] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[03:56:32.172] Server  LOG     Starting document analysis...
+[03:56:32.173] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[03:56:32.174] Server  LOG     Converting file to array buffer...
+[03:56:32.174] Server  LOG     Array buffer size: 38035
+[03:56:32.174] Server  LOG     Converting to Buffer...
+[03:56:32.174] Server  LOG     Buffer size: 38035
+[03:56:32.175] Server  LOG     Extracting raw text with mammoth...
+[03:56:32.297] Server  LOG     Extracted text length: 2104
+[03:56:32.298] Server  LOG     Converting to HTML with mammoth...
+[03:56:32.383] Server  LOG     HTML content length: 2658
+[03:59:09.124] Server  LOG      ✓ Compiled in 1533ms
+[03:59:35.924] Server  LOG      ✓ Compiled in 1604ms
+[04:00:24.824] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:00:25.051] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[04:01:36.509] Browser ERROR   uncaughtError: InvalidStateError: Failed to set the 'value' property on 'HTMLInputElement': This input element accepts a filename, which may only be programmatically set to the empty string.
+[04:03:05.547] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:03:05.749] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[04:03:42.756] Server  LOG     Starting document analysis...
+[04:03:42.757] Server  LOG     File received: "Sample_SEC_FINRA_Compliance_Check.docx" "Size:" 38035 "Type:" "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+[04:03:42.758] Server  LOG     Converting file to array buffer...
+[04:03:42.759] Server  LOG     Array buffer size: 38035
+[04:03:42.759] Server  LOG     Converting to Buffer...
+[04:03:42.759] Server  LOG     Buffer size: 38035
+[04:03:42.760] Server  LOG     Extracting raw text with mammoth...
+[04:03:42.847] Server  LOG     Extracted text length: 2104
+[04:03:42.848] Server  LOG     Converting to HTML with mammoth...
+[04:03:42.918] Server  LOG     HTML content length: 2658
+[04:19:07.835] Browser LOG     Upload Complete! {"id":"doc-1763026126362","lastUpdated":"2025-11-13","projectName":"New Marketing Document","status":"In Review","title":"document_edited","type":"Fact Sheet"}
+[04:19:07.835] Browser LOG     Navigating to: dashboard
+[04:19:07.993] Browser LOG     [EditorPage] Loading document: doc-1763026126362
+[04:19:07.993] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[04:19:07.993] Browser LOG     [EditorPage] Loading document: doc-1763026126362
+[04:19:07.993] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[04:19:08.411] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[04:19:08.411] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[04:19:08.702] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:19:08.702] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:19:08.702] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[04:19:11.182] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
+[04:19:11.288] Browser ERROR   Error analyzing content with Gemini: {}
+[04:19:11.288] Browser ERROR   {}
+[04:19:25.705] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
+[04:19:25.810] Browser ERROR   Error analyzing content with Gemini: {}
+[04:19:25.810] Browser ERROR   {}
+[04:20:45.572] Server  LOG      ✓ Compiled in 1501ms
+[04:21:32.311] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:21:32.311] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:21:32.311] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[04:21:33.156] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:21:33.156] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:21:33.156] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[04:21:42.715] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:21:43.058] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[04:21:43.058] Browser LOG     [EditorPage] Loading document: doc-1763026126362
+[04:21:43.058] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[04:21:43.599] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[04:21:43.599] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 2 pages
+[04:21:43.882] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:21:43.882] Browser LOG     [PdfViewerPdfJs] Rendered page 1/2
+[04:21:43.882] Browser LOG     [PdfViewerPdfJs] Rendered page 2/2
+[04:22:07.965] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:22:07.965] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[04:22:32.711] Browser LOG     Upload Complete! {"id":"doc-1763026331245","lastUpdated":"2025-11-13","projectName":"New Marketing Document","status":"In Review","title":"sample_compliance","type":"Fact Sheet"}
+[04:22:32.711] Browser LOG     Navigating to: dashboard
+[04:22:32.911] Browser LOG     [EditorPage] Loading document: doc-1763026331245
+[04:22:32.911] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[04:22:32.911] Browser LOG     [EditorPage] Loading document: doc-1763026331245
+[04:22:32.911] Browser LOG     [EditorPage] PDF URL retrieved: exists
+[04:22:33.306] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 1 pages
+[04:22:33.306] Browser LOG     [PdfViewerPdfJs] PDF loaded successfully: 1 pages
+[04:22:33.611] Browser WARN    Warning: Cannot load system font: ZapfDingbats, installing it could help to improve PDF rendering.
+[04:22:33.611] Browser LOG     [PdfViewerPdfJs] Rendered page 1/1
+[04:22:33.611] Browser LOG     [PdfViewerPdfJs] Rendered page 1/1
+[04:22:33.611] Browser LOG     [PdfViewerPdfJs] Rendered page 1/1
+[04:22:40.941] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
+[04:22:41.069] Browser ERROR   Error analyzing content with Gemini: {}
+[04:22:41.069] Browser ERROR   {}
+[04:22:44.046] Server  ERROR   Error analyzing content with Gemini: ApiError: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
+[04:22:44.151] Browser ERROR   Error analyzing content with Gemini: {}
+[04:22:44.151] Browser ERROR   {}

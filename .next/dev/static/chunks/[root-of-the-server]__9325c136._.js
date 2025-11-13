@@ -204,6 +204,19 @@ const AppContextProvider = ({ children })=>{
             ;
         }
     }["AppContextProvider.useState"]);
+    // Store PDF bytes as ArrayBuffer (in memory only, not persisted to localStorage due to size)
+    const [documentPdfBytesMap, setDocumentPdfBytesMap] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(new Map());
+    // Store modified PDF URLs
+    const [modifiedPdfUrlMap, setModifiedPdfUrlMap] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        "AppContextProvider.useState": ()=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                const storedMap = localStorage.getItem('modifiedPdfUrlMap');
+                return storedMap ? new Map(JSON.parse(storedMap)) : new Map();
+            }
+            //TURBOPACK unreachable
+            ;
+        }
+    }["AppContextProvider.useState"]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AppContextProvider.useEffect": ()=>{
             if ("TURBOPACK compile-time truthy", 1) {
@@ -231,16 +244,28 @@ const AppContextProvider = ({ children })=>{
     }["AppContextProvider.useEffect"], [
         documentsMap
     ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppContextProvider.useEffect": ()=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                localStorage.setItem('modifiedPdfUrlMap', JSON.stringify(Array.from(modifiedPdfUrlMap.entries())));
+            }
+        }
+    }["AppContextProvider.useEffect"], [
+        modifiedPdfUrlMap
+    ]);
     const navigateTo = (view)=>{
         setCurrentView(view);
         // In a Next.js app, you'd typically use next/router for actual navigation
         // For this example, we'll just update the state
         console.log(`Navigating to: ${view}`);
     };
-    const onUploadComplete = (newDoc, content, pdfUrl)=>{
+    const onUploadComplete = (newDoc, content, pdfUrl, pdfBytes)=>{
         setDocumentContentMap((prevMap)=>new Map(prevMap.set(newDoc.id, content)));
         if (pdfUrl) {
             setDocumentPdfUrlMap((prevMap)=>new Map(prevMap.set(newDoc.id, pdfUrl)));
+        }
+        if (pdfBytes) {
+            setDocumentPdfBytesMap((prevMap)=>new Map(prevMap.set(newDoc.id, pdfBytes)));
         }
         setDocumentsMap((prevMap)=>new Map(prevMap.set(newDoc.id, newDoc)));
         console.log("Upload Complete!", newDoc);
@@ -251,6 +276,18 @@ const AppContextProvider = ({ children })=>{
     };
     const getDocumentPdfUrl = (documentId)=>{
         return documentPdfUrlMap.get(documentId);
+    };
+    const getDocumentPdfBytes = (documentId)=>{
+        return documentPdfBytesMap.get(documentId);
+    };
+    const setDocumentPdfBytes = (documentId, pdfBytes)=>{
+        setDocumentPdfBytesMap((prevMap)=>new Map(prevMap.set(documentId, pdfBytes)));
+    };
+    const getModifiedPdfUrl = (documentId)=>{
+        return modifiedPdfUrlMap.get(documentId);
+    };
+    const setModifiedPdfUrl = (documentId, pdfUrl)=>{
+        setModifiedPdfUrlMap((prevMap)=>new Map(prevMap.set(documentId, pdfUrl)));
     };
     const getDocument = (documentId)=>{
         return documentsMap.get(documentId);
@@ -297,6 +334,10 @@ const AppContextProvider = ({ children })=>{
             onUploadComplete,
             getDocumentContent,
             getDocumentPdfUrl,
+            getDocumentPdfBytes,
+            setDocumentPdfBytes,
+            getModifiedPdfUrl,
+            setModifiedPdfUrl,
             saveProjectAsDraft,
             getProjects,
             getDocument
@@ -304,11 +345,11 @@ const AppContextProvider = ({ children })=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/lib/AppContext.tsx",
-        lineNumber: 137,
+        lineNumber: 175,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
-_s(AppContextProvider, "kM1/3B9Xz+GKaOvYrduU8aSw/3M=");
+_s(AppContextProvider, "UwH/E/3D/xo5VA0eaaYdb2OFsp4=");
 _c = AppContextProvider;
 const useAppContext = ()=>{
     _s1();
@@ -421,6 +462,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navi
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/house.js [app-client] (ecmascript) <export default as Home>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$folder$2d$kanban$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FolderKanban$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/folder-kanban.js [app-client] (ecmascript) <export default as FolderKanban>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/settings.js [app-client] (ecmascript) <export default as Settings>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileCheck$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-check.js [app-client] (ecmascript) <export default as FileCheck>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/utils.ts [app-client] (ecmascript)");
 ;
@@ -436,6 +478,11 @@ const navigationItems = [
         name: "Home",
         href: "/dashboard",
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$house$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Home$3e$__["Home"]
+    },
+    {
+        name: "Compliance Editor",
+        href: "/compliance-editor",
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileCheck$3e$__["FileCheck"]
     },
     {
         name: "Projects",
@@ -461,12 +508,12 @@ function Sidebar() {
                     children: "Power Of Two"
                 }, void 0, false, {
                     fileName: "[project]/components/Sidebar.tsx",
-                    lineNumber: 34,
+                    lineNumber: 39,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/Sidebar.tsx",
-                lineNumber: 33,
+                lineNumber: 38,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -485,37 +532,37 @@ function Sidebar() {
                                     className: "h-5 w-5"
                                 }, void 0, false, {
                                     fileName: "[project]/components/Sidebar.tsx",
-                                    lineNumber: 54,
+                                    lineNumber: 59,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     children: item.name
                                 }, void 0, false, {
                                     fileName: "[project]/components/Sidebar.tsx",
-                                    lineNumber: 55,
+                                    lineNumber: 60,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/Sidebar.tsx",
-                            lineNumber: 53,
+                            lineNumber: 58,
                             columnNumber: 15
                         }, this)
                     }, item.name, false, {
                         fileName: "[project]/components/Sidebar.tsx",
-                        lineNumber: 44,
+                        lineNumber: 49,
                         columnNumber: 13
                     }, this);
                 })
             }, void 0, false, {
                 fileName: "[project]/components/Sidebar.tsx",
-                lineNumber: 38,
+                lineNumber: 43,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/Sidebar.tsx",
-        lineNumber: 31,
+        lineNumber: 36,
         columnNumber: 5
     }, this);
 }
@@ -553,14 +600,15 @@ const authenticatedRoutes = [
     "/editor",
     "/upload",
     "/proofread",
+    "/compliance-editor",
     "/settings"
 ];
 function AuthenticatedLayout({ children }) {
     _s();
     const { isLoaded, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$clerk$2f$shared$2f$dist$2f$runtime$2f$react$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUser"])();
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
-    // Check if current route should show sidebar (exclude /editor)
-    const shouldShowSidebar = authenticatedRoutes.some((route)=>pathname?.startsWith(route)) && isLoaded && user && !pathname?.startsWith("/editor");
+    // Check if current route should show sidebar (exclude /editor and /compliance-editor for full-screen experience)
+    const shouldShowSidebar = authenticatedRoutes.some((route)=>pathname?.startsWith(route)) && isLoaded && user && !pathname?.startsWith("/editor") && !pathname?.startsWith("/compliance-editor");
     if (!shouldShowSidebar) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: children
@@ -571,7 +619,7 @@ function AuthenticatedLayout({ children }) {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/components/AuthenticatedLayout.tsx",
-                lineNumber: 34,
+                lineNumber: 35,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -579,13 +627,13 @@ function AuthenticatedLayout({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/components/AuthenticatedLayout.tsx",
-                lineNumber: 35,
+                lineNumber: 36,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/AuthenticatedLayout.tsx",
-        lineNumber: 33,
+        lineNumber: 34,
         columnNumber: 5
     }, this);
 }
@@ -638,7 +686,7 @@ function RootLayout({ children }) {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ThemeSwitcher$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ThemeSwitcher"], {}, void 0, false, {
                             fileName: "[project]/app/layout.tsx",
-                            lineNumber: 35,
+                            lineNumber: 33,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AppContextProvider"], {
@@ -646,33 +694,33 @@ function RootLayout({ children }) {
                                 children: children
                             }, void 0, false, {
                                 fileName: "[project]/app/layout.tsx",
-                                lineNumber: 37,
+                                lineNumber: 35,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/layout.tsx",
-                            lineNumber: 36,
+                            lineNumber: 34,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/layout.tsx",
-                    lineNumber: 34,
+                    lineNumber: 32,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/layout.tsx",
-                lineNumber: 31,
+                lineNumber: 29,
                 columnNumber: 9
             }, this)
         }, "app-html", false, {
             fileName: "[project]/app/layout.tsx",
-            lineNumber: 30,
+            lineNumber: 28,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/layout.tsx",
-        lineNumber: 29,
+        lineNumber: 27,
         columnNumber: 5
     }, this);
 }

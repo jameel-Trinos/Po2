@@ -9,6 +9,7 @@ const authenticatedRoutes = [
   "/editor",
   "/upload",
   "/proofread",
+  "/compliance-editor",
   "/settings",
 ];
 
@@ -20,10 +21,10 @@ export default function AuthenticatedLayout({
   const { isLoaded, user } = useUser();
   const pathname = usePathname();
   
-  // Check if current route should show sidebar (exclude /editor)
+  // Check if current route should show sidebar (exclude /editor and /compliance-editor for full-screen experience)
   const shouldShowSidebar = authenticatedRoutes.some((route) =>
     pathname?.startsWith(route)
-  ) && isLoaded && user && !pathname?.startsWith("/editor");
+  ) && isLoaded && user && !pathname?.startsWith("/editor") && !pathname?.startsWith("/compliance-editor");
 
   if (!shouldShowSidebar) {
     return <>{children}</>;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppContext } from '../../lib/AppContext';
 import { motion } from 'framer-motion';
@@ -12,43 +12,95 @@ import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Download } from 'lucide-react';
+import { Download, Loader2, FileText, ArrowLeftRight, FileDown } from 'lucide-react';
 import type { Suggestion } from '../../lib/types/proofreader';
 import { analyzePdfContent } from '../../lib/services/geminiService';
+import { downloadPdf, generatePdfFilename } from '../../lib/utils/pdfDownload';
+import EditorSuggestionsPanel from '../../components/editor/EditorSuggestionsPanel';
+import WordEditor from '../../components/editor/WordEditor';
+import dynamic from 'next/dynamic';
+import { wordBlobToHtml, htmlToWordBlob, convertWordToPdf } from '../../lib/services/pdfWordConverter';
+import { toast } from 'sonner';
+
+// Helper function to load pdfjs dynamically
+async function loadPdfJs() {
+  const pdfjs = await import('pdfjs-dist');
+  if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+  }
+  return pdfjs;
+}
+
+// Dynamically import PDF viewer to avoid SSR issues with pdfjs-dist
+const PdfViewerPdfJs = dynamic(() => import('@/components/editor/PdfViewerPdfJs'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[75vh] rounded-md overflow-hidden border border-zinc-200 dark:border-zinc-800 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+      <div className="flex flex-col items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900 dark:border-zinc-100 mb-4"></div>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">Loading PDF viewer...</p>
+      </div>
+    </div>
+  )
+});
 
 export default function EditorPage() {
   const searchParams = useSearchParams();
   const documentId = searchParams.get('documentId');
-  const { getDocumentPdfUrl, getDocumentContent, saveProjectAsDraft, getDocument } = useAppContext();
+  const { 
+    getDocumentPdfUrl, 
+    getDocumentContent, 
+    saveProjectAsDraft, 
+    getDocument,
+    getModifiedPdfUrl,
+    setModifiedPdfUrl,
+  } = useAppContext();
 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [rawText, setRawText] = useState<string>('');
-  const [editableHtml, setEditableHtml] = useState<string>('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number | null>(null);
   const [acceptedIndices, setAcceptedIndices] = useState<number[]>([]);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [projectName, setProjectName] = useState<string>('');
+  const [editingMode, setEditingMode] = useState<'pdf' | 'word'>('pdf');
+  const [wordHtml, setWordHtml] = useState<string>('');
+  const [wordBlob, setWordBlob] = useState<Blob | null>(null);
+  const [originalPdfUrl, setOriginalPdfUrl] = useState<string | null>(null);
+  const pdfApisRef = useRef<{ 
+    gotoLocation: (opts: { pageNumber: number; zoom?: number }) => Promise<void>;
+    getCurrentPage: () => number;
+    getTotalPages: () => number;
+    reload: (file: Blob | string) => Promise<void>;
+    search?: (query: string) => Promise<{ pageNumber: number } | null>;
+  } | null>(null);
 
   useEffect(() => {
     if (!documentId) {
+      console.error('[EditorPage] No document ID provided');
       setError("No document ID provided.");
       return;
     }
+    
+    console.log('[EditorPage] Loading document:', documentId);
     setIsLoading(true);
     setError(null);
+    
     try {
       const url = getDocumentPdfUrl(documentId);
+      console.log('[EditorPage] PDF URL retrieved:', url ? 'exists' : 'null');
+      
       if (url) {
         setPdfUrl(url);
+        setOriginalPdfUrl(url);
       } else {
-        // Don't set error - just leave pdfUrl as null so we can still show editable content
+        console.warn('[EditorPage] No PDF URL found for document');
         setPdfUrl(null);
       }
     } catch (e) {
-      // Don't block the page if PDF can't be loaded - still allow editing
+      console.error('[EditorPage] Error loading PDF:', e);
       setPdfUrl(null);
     } finally {
       setIsLoading(false);
@@ -64,50 +116,229 @@ export default function EditorPage() {
       setProjectName(document.projectName || '');
     }
     if (content) {
-      setRawText(content);
-      const html = content.split('\n').map(l => l === '' ? '<br/>' : l).join('<br/>');
-      setEditableHtml(html);
       analyzePdfContent(content)
         .then(ai => setSuggestions(ai))
         .catch(e => console.error(e));
     }
   }, [documentId, getDocumentContent, getDocument]);
 
-  // Highlight selected suggestion in editableHtml
-  const getHighlightedHtml = (): string => {
-    if (selectedSuggestionIndex === null) return editableHtml;
-    const s = suggestions[selectedSuggestionIndex];
-    if (!s) return editableHtml;
-    // Avoid duplicating marks; strip previous marks first
-    const clean = editableHtml.replace(/<mark data-po2="1" class="[^"]*">([\s\S]*?)<\/mark>/g, '$1');
-    // Replace first occurrence of original with a marked version
-    const escaped = s.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escaped, 'i');
-    return clean.replace(regex, `<mark data-po2="1" class="bg-yellow-200 dark:bg-yellow-300/40">$&</mark>`);
+  // Convert PDF to Word for editing
+  const handleConvertToWord = async () => {
+    if (!documentId || !pdfUrl) {
+      toast.error('PDF not available for conversion');
+      return;
+    }
+
+    setIsConverting(true);
+    setError(null);
+
+    try {
+      // Extract text from PDF using pdfjs
+      const response = await fetch(pdfUrl);
+      const arrayBuffer = await response.arrayBuffer();
+      
+      // Dynamically load pdfjs
+      const pdfjs = await loadPdfJs();
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+      
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map((item: any) => item.str).join(' ');
+        fullText += pageText + '\n\n';
+      }
+      
+      // Convert to HTML format for editing
+      const htmlContent = fullText
+        .split('\n\n')
+        .filter(p => p.trim())
+        .map(p => `<p>${p}</p>`)
+        .join('\n');
+      
+      setWordHtml(htmlContent);
+      setEditingMode('word');
+      toast.success('Converted to editable format');
+    } catch (err) {
+      console.error('Error converting PDF:', err);
+      toast.error('Failed to convert PDF. Please try again.');
+      setError('Failed to convert PDF to editable format.');
+    } finally {
+      setIsConverting(false);
+    }
   };
 
+  // Convert back to PDF
+  const handleConvertBackToPdf = async () => {
+    if (!documentId || !wordHtml) {
+      toast.error('No content to convert');
+      return;
+    }
+
+    setIsConverting(true);
+    setError(null);
+
+    try {
+      const htmlBlob = await htmlToWordBlob(wordHtml);
+      const newPdfUrl = await convertWordToPdf(htmlBlob);
+      
+      setPdfUrl(newPdfUrl);
+      setModifiedPdfUrl(documentId, newPdfUrl);
+      setEditingMode('pdf');
+      toast.success('Converted back to PDF');
+    } catch (err) {
+      console.error('Error converting to PDF:', err);
+      toast.error('Failed to convert to PDF. Please try again.');
+      setError('Failed to convert to PDF.');
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  // Apply suggestion to Word content
   const handleApplySuggestion = (index: number) => {
     const s = suggestions[index];
     if (!s) return;
-    const escaped = s.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escaped, 'i');
-    const clean = editableHtml.replace(/<mark data-po2="1" class="[^"]*">([\s\S]*?)<\/mark>/g, '$1');
-    const replacedOnce = clean.replace(regex, s.suggestion);
-    setEditableHtml(replacedOnce);
-    // Track accepted (applied) suggestions for counters
-    setAcceptedIndices(prev => [...prev, index]);
-    setSuggestions(prev => prev.filter((_, i) => i !== index));
-    setSelectedSuggestionIndex(null);
+
+    if (editingMode === 'word') {
+      // Apply to Word HTML content
+      const originalText = s.original || s.text;
+      const regex = new RegExp(originalText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      const updatedHtml = wordHtml.replace(regex, s.suggestion);
+      setWordHtml(updatedHtml);
+      
+      setAcceptedIndices(prev => [...prev, index]);
+      setSuggestions(prev => prev.filter((_, i) => i !== index));
+      setSelectedSuggestionIndex(null);
+      toast.success('Suggestion applied');
+    } else {
+      toast.error('Convert to Word to apply suggestions');
+    }
+  };
+
+  // Navigate to suggestion in Word editor
+  const handleGoToSuggestion = (index: number) => {
+    setSelectedSuggestionIndex(index);
+    // The WordEditor component will handle highlighting
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!documentId) return;
+
+    try {
+      if (!pdfUrl) {
+        toast.error('No PDF available to download');
+        return;
+      }
+
+      const filename = generatePdfFilename(projectName, pdfUrl !== originalPdfUrl ? 'modified' : 'original');
+      downloadPdf(pdfUrl, filename);
+    } catch (err) {
+      console.error('Error downloading PDF:', err);
+      toast.error('Failed to download PDF');
+    }
+  };
+
+  const handleConvertPdfToWord = async () => {
+    if (!documentId || !pdfUrl) {
+      toast.error('PDF not available for conversion');
+      return;
+    }
+
+    setIsConverting(true);
+    setError(null);
+
+    try {
+      // Fetch the PDF file
+      const response = await fetch(pdfUrl);
+      const pdfBlob = await response.blob();
+      
+      // Create FormData to send to the API
+      const formData = new FormData();
+      const filename = projectName ? `${projectName}.pdf` : 'document.pdf';
+      formData.append('file', pdfBlob, filename);
+
+      // Call the PDF to DOCX conversion API
+      const convertResponse = await fetch('/api/pdf-to-docx', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!convertResponse.ok) {
+        // Try to get error details from the response
+        let errorMessage = 'Failed to convert PDF to Word';
+        const contentType = convertResponse.headers.get('content-type');
+        
+        console.error('[PDF to Word] Conversion failed:', {
+          status: convertResponse.status,
+          statusText: convertResponse.statusText,
+          contentType,
+        });
+        
+        try {
+          // Try to get the response body as text first
+          const errorText = await convertResponse.text();
+          console.log('[PDF to Word] Error response body:', errorText);
+          
+          // Check if response is JSON
+          if (contentType && contentType.includes('application/json') && errorText) {
+            try {
+              const errorData = JSON.parse(errorText);
+              console.error('[PDF to Word] Parsed error data:', errorData);
+              // Try multiple fields for error message, prioritizing user-friendly messages
+              errorMessage = errorData.message || errorData.error || errorData.details || errorMessage;
+            } catch (parseError) {
+              // If JSON parsing fails, use the text as error message
+              console.error('[PDF to Word] JSON parse error:', parseError);
+              errorMessage = errorText || errorMessage;
+            }
+          } else if (errorText) {
+            // Response is not JSON or no content-type header, use text directly
+            errorMessage = errorText || convertResponse.statusText || `HTTP ${convertResponse.status}`;
+          } else {
+            // No response body
+            errorMessage = convertResponse.statusText || `HTTP ${convertResponse.status}`;
+          }
+        } catch (e) {
+          // If we can't read the response, use status information
+          console.error('[PDF to Word] Error reading response:', e);
+          errorMessage = convertResponse.statusText || `HTTP ${convertResponse.status}: Failed to convert PDF to Word`;
+        }
+        
+        console.error('[PDF to Word] Final error message:', errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      // Get the DOCX blob
+      const docxBlob = await convertResponse.blob();
+      
+      // Download the DOCX file
+      const url = window.URL.createObjectURL(docxBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename.replace(/\.pdf$/i, '.docx');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('PDF converted to Word and downloaded');
+    } catch (err) {
+      console.error('Error converting PDF to Word:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to convert PDF to Word';
+      toast.error(errorMessage);
+      setError(errorMessage);
+    } finally {
+      setIsConverting(false);
+    }
   };
 
   const handleSaveAsDraft = () => {
     if (!documentId) return;
     
-    // If project name exists, save directly; otherwise show dialog
     if (projectName.trim()) {
       saveProjectAsDraft(projectName.trim(), documentId);
-      // Show success feedback (you could use toast here)
-      alert('Project saved as draft!');
+      toast.success('Project saved as draft!');
     } else {
       setSaveDialogOpen(true);
     }
@@ -117,7 +348,7 @@ export default function EditorPage() {
     if (!documentId || !projectName.trim()) return;
     saveProjectAsDraft(projectName.trim(), documentId);
     setSaveDialogOpen(false);
-    alert('Project saved as draft!');
+    toast.success('Project saved as draft!');
   };
 
   if (isLoading) {
@@ -155,181 +386,141 @@ export default function EditorPage() {
       <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           <Card className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-            <CardHeader className="pb-2 flex items-center justify-between">
-              <CardTitle className="text-gray-900 dark:text-gray-50">Document Viewer</CardTitle>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Download document
-              </Button>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-gray-900 dark:text-gray-50">
+                  {editingMode === 'word' ? 'Document Editor' : 'Document Viewer'}
+                </CardTitle>
+                <div className="flex gap-2">
+                  {editingMode === 'pdf' && pdfUrl && (
+                    <>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={handleConvertToWord}
+                        disabled={isConverting}
+                      >
+                        {isConverting ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <FileText className="h-4 w-4 mr-2" />
+                        )}
+                        Edit Document
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={handleConvertPdfToWord}
+                        disabled={isConverting}
+                      >
+                        {isConverting ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <FileDown className="h-4 w-4 mr-2" />
+                        )}
+                        Convert to Word
+                      </Button>
+                    </>
+                  )}
+                  {editingMode === 'word' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleConvertBackToPdf}
+                      disabled={isConverting}
+                    >
+                      {isConverting ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <ArrowLeftRight className="h-4 w-4 mr-2" />
+                      )}
+                      Back to PDF
+                    </Button>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleDownloadPdf} 
+                    disabled={!pdfUrl}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                </div>
+              </div>
+              {editingMode === 'pdf' && (
+                <Badge variant="secondary" className="mt-2">
+                  Click "Edit Document" to apply suggestions
+                </Badge>
+              )}
             </CardHeader>
-            <CardContent className="p-0">
-              {pdfUrl ? (
-                <iframe
-                  src={pdfUrl}
-                  className="w-full h-[88vh] rounded-b-xl"
-                  title="PDF Viewer"
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-[88vh] p-6 text-center">
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    PDF not available for this document.
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-500">
-                    You can still edit the content below.
-                  </div>
+            <CardContent className="p-4">
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
                 </div>
               )}
-              {/* Editable pane below the viewer */}
-              <div className="p-4 border-t border-zinc-200 dark:border-zinc-800">
-                <div className="text-sm font-medium mb-2 text-zinc-700 dark:text-zinc-200">Editable content</div>
-                <div
-                  id="po2-editable"
-                  className="prose prose-zinc dark:prose-invert max-w-none outline-none min-h-[240px] bg-zinc-50/40 dark:bg-zinc-900/40 rounded-md p-3"
-                  contentEditable
-                  suppressContentEditableWarning
-                  dangerouslySetInnerHTML={{ __html: getHighlightedHtml() }}
-                  onInput={(e) => setEditableHtml((e.target as HTMLDivElement).innerHTML)}
+              
+              {editingMode === 'word' ? (
+                <WordEditor
+                  wordHtml={wordHtml}
+                  suggestions={suggestions}
+                  selectedSuggestionIndex={selectedSuggestionIndex}
+                  onContentChange={setWordHtml}
+                  onApplySuggestion={handleApplySuggestion}
+                  isLoading={isConverting}
                 />
-              </div>
+              ) : pdfUrl ? (
+                <PdfViewerPdfJs
+                  fileUrl={pdfUrl}
+                  fileName={projectName ? `${projectName}.pdf` : 'document.pdf'}
+                  onReady={(apis) => {
+                    pdfApisRef.current = apis;
+                  }}
+                  className="w-full h-[75vh] rounded-md overflow-hidden border border-zinc-200 dark:border-zinc-800"
+                />
+              ) : (
+                <div className="w-full h-[75vh] rounded-md overflow-hidden border border-zinc-200 dark:border-zinc-800 flex flex-col items-center justify-center p-6 bg-zinc-50 dark:bg-zinc-900">
+                  <svg
+                    className="w-16 h-16 text-zinc-400 dark:text-zinc-600 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300 mb-2">No PDF Available</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center max-w-md">
+                    No PDF file was found for this document. Please upload a PDF file to view it here.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
 
         <aside className="md:col-span-1">
-          <Card className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-emerald-600 dark:text-emerald-400">
-                  PO2 compliance pre-checks
-                </CardTitle>
-              </div>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                <div className="flex items-center justify-between rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2">
-                  <div className="text-sm text-zinc-600 dark:text-zinc-300">All suggestions</div>
-                  <Badge variant="secondary" className="rounded-full">
-                    {suggestions.length + acceptedIndices.length}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2">
-                  <div className="text-sm text-zinc-600 dark:text-zinc-300">Accepted</div>
-                  <Badge variant="secondary" className="rounded-full">
-                    {acceptedIndices.length}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-amber-600 hover:bg-amber-600 text-white">Misleading</Badge>
-                  <span className="text-zinc-400">•</span>
-                  <Badge variant="outline" className="border-zinc-300 dark:border-zinc-700">Unsubstantiated Claims</Badge>
-                  <div className="ml-auto">
-                    <Badge variant="secondary">Page 1</Badge>
-                  </div>
-                </div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                  SEC Marketing Rule 206(4)-1(a)(1), SEC Marketing Rule 206(4)-1(a)(6), SEC Marketing Rule 206(4)-1(d)(1)
-                </div>
-                {/* Dynamic suggestions list */}
-                <div className="space-y-3">
-                  {suggestions.length === 0 ? (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-300">No suggestions yet.</p>
-                  ) : (
-                    suggestions.map((s, i) => (
-                      <div
-                        key={`${s.page}-${i}-${s.original.slice(0, 16)}`}
-                        className={`rounded-md border p-3 cursor-pointer transition ${
-                          selectedSuggestionIndex === i
-                            ? 'border-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20'
-                            : 'border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/40'
-                        }`}
-                        onClick={() => setSelectedSuggestionIndex(i)}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="rounded-full">Page {s.page}</Badge>
-                          <span className="text-xs text-zinc-500">Click to highlight</span>
-                        </div>
-                        <div className="mt-2 text-sm text-zinc-800 dark:text-zinc-100">
-                          {s.explanation}
-                        </div>
-                        <div className="mt-2 text-sm">
-                          <span className="text-zinc-500">Original:</span>{' '}
-                          <span className="font-medium">{s.original}</span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="text-zinc-500">Suggestion:</span>{' '}
-                          <span className="font-medium text-emerald-700 dark:text-emerald-300">{s.suggestion}</span>
-                        </div>
-                        <div className="mt-3 flex gap-2">
-                          <Button size="sm" onClick={(e) => { e.stopPropagation(); handleApplySuggestion(i); }}>
-                            Apply
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setSelectedSuggestionIndex(i); }}>
-                            Tell me why
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                <Separator />
-
-                <div className="space-y-2">
-                  <div className="font-medium text-zinc-900 dark:text-zinc-50">Recommendations</div>
-                  <p className="text-sm text-emerald-700 dark:text-emerald-300">
-                    Correct the statement to ‘Performance data represents past performance and does not guarantee
-                    future results.’ If gross performance is calculated and available for this fund/share class,
-                    show it with equal prominence to net performance.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-2">
-                  <Button variant="outline" onClick={handleSaveAsDraft}>Save as draft</Button>
-                  <Button>Send file to</Button>
-                </div>
-
-                <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
-                  <DialogContent className="bg-white dark:bg-zinc-900">
-                    <DialogHeader>
-                      <DialogTitle className="text-gray-900 dark:text-gray-50">Save Project as Draft</DialogTitle>
-                      <DialogDescription className="text-gray-600 dark:text-gray-400">
-                        Enter a name for your project
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="project-name" className="text-gray-900 dark:text-gray-50">
-                          Project Name
-                        </Label>
-                        <Input
-                          id="project-name"
-                          value={projectName}
-                          onChange={(e) => setProjectName(e.target.value)}
-                          placeholder="Enter project name"
-                          className="bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-50"
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' && projectName.trim()) {
-                              handleConfirmSave();
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
-                        Cancel
-                      </Button>
-                      <Button onClick={handleConfirmSave} disabled={!projectName.trim()}>
-                        Save
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </CardContent>
-          </Card>
+          <EditorSuggestionsPanel
+            suggestions={suggestions}
+            selectedIndex={selectedSuggestionIndex}
+            onSelectIndex={setSelectedSuggestionIndex}
+            onApplyAtIndex={handleApplySuggestion}
+            onGoToIndex={handleGoToSuggestion}
+            acceptedCount={acceptedIndices.length}
+            onSaveDraft={handleSaveAsDraft}
+            saveDialogOpen={saveDialogOpen}
+            setSaveDialogOpen={setSaveDialogOpen}
+            projectName={projectName}
+            setProjectName={setProjectName}
+            onConfirmSave={handleConfirmSave}
+            isApplying={isConverting}
+            canApply={editingMode === 'word'}
+          />
         </aside>
       </div>
     </motion.div>

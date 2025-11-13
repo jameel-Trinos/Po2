@@ -14,9 +14,13 @@ export interface Project {
 
 interface AppContextType {
   navigateTo: (view: View) => void;
-  onUploadComplete: (newDoc: Document, content: string, pdfUrl?: string) => void;
+  onUploadComplete: (newDoc: Document, content: string, pdfUrl?: string, pdfBytes?: ArrayBuffer) => void;
   getDocumentContent: (documentId: string) => string | undefined;
   getDocumentPdfUrl: (documentId: string) => string | undefined;
+  getDocumentPdfBytes: (documentId: string) => ArrayBuffer | undefined;
+  setDocumentPdfBytes: (documentId: string, pdfBytes: ArrayBuffer) => void;
+  getModifiedPdfUrl: (documentId: string) => string | undefined;
+  setModifiedPdfUrl: (documentId: string, pdfUrl: string) => void;
   saveProjectAsDraft: (projectName: string, documentId: string) => void;
   getProjects: () => Project[];
   getDocument: (documentId: string) => Document | undefined;
@@ -47,6 +51,16 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
     }
     return new Map();
   });
+  // Store PDF bytes as ArrayBuffer (in memory only, not persisted to localStorage due to size)
+  const [documentPdfBytesMap, setDocumentPdfBytesMap] = useState<Map<string, ArrayBuffer>>(new Map());
+  // Store modified PDF URLs
+  const [modifiedPdfUrlMap, setModifiedPdfUrlMap] = useState<Map<string, string>>(() => {
+    if (typeof window !== 'undefined') {
+      const storedMap = localStorage.getItem('modifiedPdfUrlMap');
+      return storedMap ? new Map(JSON.parse(storedMap)) : new Map();
+    }
+    return new Map();
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -63,6 +77,11 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
       localStorage.setItem('documentsMap', JSON.stringify(Array.from(documentsMap.entries())));
     }
   }, [documentsMap]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('modifiedPdfUrlMap', JSON.stringify(Array.from(modifiedPdfUrlMap.entries())));
+    }
+  }, [modifiedPdfUrlMap]);
 
   const navigateTo = (view: View) => {
     setCurrentView(view);
@@ -71,10 +90,13 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
     console.log(`Navigating to: ${view}`);
   };
 
-  const onUploadComplete = (newDoc: Document, content: string, pdfUrl?: string) => {
+  const onUploadComplete = (newDoc: Document, content: string, pdfUrl?: string, pdfBytes?: ArrayBuffer) => {
     setDocumentContentMap(prevMap => new Map(prevMap.set(newDoc.id, content)));
     if (pdfUrl) {
       setDocumentPdfUrlMap(prevMap => new Map(prevMap.set(newDoc.id, pdfUrl)));
+    }
+    if (pdfBytes) {
+      setDocumentPdfBytesMap(prevMap => new Map(prevMap.set(newDoc.id, pdfBytes)));
     }
     setDocumentsMap(prevMap => new Map(prevMap.set(newDoc.id, newDoc)));
     console.log("Upload Complete!", newDoc);
@@ -86,6 +108,22 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
   };
   const getDocumentPdfUrl = (documentId: string) => {
     return documentPdfUrlMap.get(documentId);
+  };
+
+  const getDocumentPdfBytes = (documentId: string): ArrayBuffer | undefined => {
+    return documentPdfBytesMap.get(documentId);
+  };
+
+  const setDocumentPdfBytes = (documentId: string, pdfBytes: ArrayBuffer) => {
+    setDocumentPdfBytesMap(prevMap => new Map(prevMap.set(documentId, pdfBytes)));
+  };
+
+  const getModifiedPdfUrl = (documentId: string): string | undefined => {
+    return modifiedPdfUrlMap.get(documentId);
+  };
+
+  const setModifiedPdfUrl = (documentId: string, pdfUrl: string) => {
+    setModifiedPdfUrlMap(prevMap => new Map(prevMap.set(documentId, pdfUrl)));
   };
 
   const getDocument = (documentId: string): Document | undefined => {
@@ -139,6 +177,10 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
       onUploadComplete, 
       getDocumentContent, 
       getDocumentPdfUrl,
+      getDocumentPdfBytes,
+      setDocumentPdfBytes,
+      getModifiedPdfUrl,
+      setModifiedPdfUrl,
       saveProjectAsDraft,
       getProjects,
       getDocument,

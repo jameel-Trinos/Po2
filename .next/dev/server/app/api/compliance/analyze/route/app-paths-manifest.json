@@ -1,0 +1,3 @@
+{
+  "/api/compliance/analyze/route": "app/api/compliance/analyze/route.js"
+}

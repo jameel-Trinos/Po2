@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FolderKanban, Settings } from "lucide-react";
+import { Home, FolderKanban, Settings, FileCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,11 @@ const navigationItems = [
     name: "Home",
     href: "/dashboard",
     icon: Home,
+  },
+  {
+    name: "Compliance Editor",
+    href: "/compliance-editor",
+    icon: FileCheck,
   },
   {
     name: "Projects",

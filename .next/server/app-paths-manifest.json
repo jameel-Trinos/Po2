@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/analyze/docx/route": "app/api/analyze/docx/route.js",
+  "/api/analyze/route": "app/api/analyze/route.js",
+  "/api/export/docx/route": "app/api/export/docx/route.js",
+  "/api/export/pdf/route": "app/api/export/pdf/route.js",
+  "/api/pdf-to-docx/route": "app/api/pdf-to-docx/route.js",
+  "/compliance-editor/page": "app/compliance-editor/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/editor/page": "app/editor/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/proofread/page": "app/proofread/page.js",
+  "/sign-up/[[...sign-up]]/page": "app/sign-up/[[...sign-up]]/page.js",
+  "/upload/page": "app/upload/page.js"
+}

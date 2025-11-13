@@ -1,10 +1,8 @@
 "use client";
 
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider, UserButton, SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
-import { ThemeProvider } from 'next-themes';
+import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { Providers } from './providers';
 import { AppContextProvider } from '../lib/AppContext';

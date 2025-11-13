@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 import { View, Document, DocumentStatus } from '../../lib/types';
-// import * as pdfjs from 'pdfjs-dist'; // Remove direct import
 
 import Spinner from '../../components/Spinner';
 import { Upload } from 'lucide-react';
@@ -26,8 +25,14 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 
-// Set the worker source for pdfjs-dist (will be set after dynamic import)
-// pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs'; // Remove direct setting
+// Helper function to load pdfjs dynamically
+async function loadPdfJs() {
+  const pdfjs = await import('pdfjs-dist');
+  if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+  }
+  return pdfjs;
+}
 
 const DOCUMENT_TYPES = [
   'Fact Sheet',
@@ -85,9 +90,8 @@ const UploadPage: React.FC<{}> = () => {
 
   // State for new fields from original spec
 
-  const [firstUseDate, setFirstUseDate] = useState(new Date().toISOString().split('T')[0]);
-
-  const [asOfContentDate, setAsOfContentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [firstUseDate, setFirstUseDate] = useState('');
+  const [asOfContentDate, setAsOfContentDate] = useState('');
 
   const [productionFrequency, setProductionFrequency] = useState('Monthly');
 
@@ -97,27 +101,15 @@ const UploadPage: React.FC<{}> = () => {
 
   const [fundType, setFundType] = useState('Open-ended Fund');
 
-  const [pdfjsLib, setPdfjsLib] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
   useEffect(() => {
-    // Dynamically import pdfjs-dist on the client-side
-    const loadPdfjs = async () => {
-      try {
-        const pdfjs = await import(/* webpackChunkName: "pdfjs-dist", ssr: false */ 'pdfjs-dist');
-        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
-        setPdfjsLib(pdfjs);
-      } catch (e: any) {
-        const message = e?.message || '';
-        if (message.includes('Invalid PDF structure') || e?.name === 'InvalidPDFException') {
-          setError('invalid pdf structure try to upload the valid pdf');
-          setErrorDialogOpen(true);
-        } else {
-          setError('Failed to load PDF library. Please refresh and try again.');
-        }
-      }
-    };
-    loadPdfjs();
+    setMounted(true);
+    // Initialize date fields on client to avoid SSR/client mismatch
+    const today = new Date().toISOString().split('T')[0];
+    setFirstUseDate(today);
+    setAsOfContentDate(today);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -145,14 +137,11 @@ const UploadPage: React.FC<{}> = () => {
 
 
     try {
-        if (!pdfjsLib) {
-          setError("PDF.js library not loaded. Please try again.");
-          setIsLoading(false);
-          return;
-        }
-
         const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        
+        // Dynamically load pdfjs
+        const pdfjs = await loadPdfJs();
+        const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
         let extractedText = '';
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
@@ -184,20 +173,45 @@ const UploadPage: React.FC<{}> = () => {
         // Simulate a delay for a better UX, then complete with mock data
 
         setTimeout(async () => {
-          // Convert file to base64 data URL for persistence
+          // Convert file to base64 data URL for persistence and ArrayBuffer for editing
           const reader = new FileReader();
-          reader.onloadend = () => {
-            const base64String = reader.result as string;
-            onUploadComplete(newDoc, extractedText, base64String);
-            router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+          const arrayBufferReader = new FileReader();
+          
+          // Read as ArrayBuffer for PDF editing
+          arrayBufferReader.onloadend = () => {
+            const pdfBytes = arrayBufferReader.result as ArrayBuffer;
+            
+            // Read as base64 for display
+            reader.onloadend = () => {
+              const base64String = reader.result as string;
+              onUploadComplete(newDoc, extractedText, base64String, pdfBytes);
+              router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+            };
+            reader.onerror = () => {
+              // Fallback to blob URL if base64 conversion fails
+              const objectUrl = URL.createObjectURL(file);
+              onUploadComplete(newDoc, extractedText, objectUrl, pdfBytes);
+              router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+            };
+            reader.readAsDataURL(file);
           };
-          reader.onerror = () => {
-            // Fallback to blob URL if base64 conversion fails
-            const objectUrl = URL.createObjectURL(file);
-            onUploadComplete(newDoc, extractedText, objectUrl);
-            router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+          
+          arrayBufferReader.onerror = () => {
+            // If ArrayBuffer read fails, still try to save base64
+            reader.onloadend = () => {
+              const base64String = reader.result as string;
+              onUploadComplete(newDoc, extractedText, base64String);
+              router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+            };
+            reader.onerror = () => {
+              const objectUrl = URL.createObjectURL(file);
+              onUploadComplete(newDoc, extractedText, objectUrl);
+              router.push(`/editor?documentId=${encodeURIComponent(newDoc.id)}`);
+            };
+            reader.readAsDataURL(file);
           };
-          reader.readAsDataURL(file);
+          
+          arrayBufferReader.readAsArrayBuffer(file);
         }, 1000);
 
         

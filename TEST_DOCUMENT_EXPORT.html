@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Document for Export - All Features</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #e7e7e7;
+            font-weight: bold;
+        }
+        .center {
+            text-align: center;
+        }
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Document - All Formatting Features</h1>
+    
+    <p>This document tests all formatting features that should be preserved when downloading as Word or PDF.</p>
+    
+    <h2>Text Formatting</h2>
+    <p>This paragraph contains <strong>bold text</strong>, <em>italic text</em>, and <u>underlined text</u>.</p>
+    <p>You can also combine them: <strong><em>bold and italic</em></strong>, <strong><u>bold and underlined</u></strong>.</p>
+    
+    <h2>Text Alignment</h2>
+    <p>This is left-aligned (default).</p>
+    <p class="center" style="text-align: center;">This is center-aligned.</p>
+    <p class="right" style="text-align: right;">This is right-aligned.</p>
+    
+    <h2>Lists</h2>
+    
+    <h3>Unordered List (Bullets)</h3>
+    <ul>
+        <li>First bullet point</li>
+        <li>Second bullet point with <strong>bold text</strong></li>
+        <li>Third bullet point with <em>italic text</em></li>
+        <li>Fourth bullet point with a longer text that should wrap properly when exported to ensure it fits within the margins</li>
+    </ul>
+    
+    <h3>Ordered List (Numbers)</h3>
+    <ol>
+        <li>First numbered item</li>
+        <li>Second numbered item</li>
+        <li>Third numbered item with formatting: <strong>bold</strong> and <em>italic</em></li>
+        <li>Fourth numbered item</li>
+    </ol>
+    
+    <h2>Tables</h2>
+    
+    <h3>Simple Table</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Header 1</th>
+                <th>Header 2</th>
+                <th>Header 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Row 1, Cell 1</td>
+                <td>Row 1, Cell 2</td>
+                <td>Row 1, Cell 3</td>
+            </tr>
+            <tr>
+                <td>Row 2, Cell 1</td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+            </tr>
+            <tr>
+                <td><strong>Bold text</strong></td>
+                <td><em>Italic text</em></td>
+                <td>Normal text</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h3>Financial Data Table</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Quarter</th>
+                <th>Revenue</th>
+                <th>Expenses</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Q1 2024</td>
+                <td>$125,000</td>
+                <td>$85,000</td>
+                <td>$40,000</td>
+            </tr>
+            <tr>
+                <td>Q2 2024</td>
+                <td>$145,000</td>
+                <td>$92,000</td>
+                <td>$53,000</td>
+            </tr>
+            <tr>
+                <td>Q3 2024</td>
+                <td>$168,000</td>
+                <td>$98,000</td>
+                <td>$70,000</td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>$438,000</strong></td>
+                <td><strong>$275,000</strong></td>
+                <td><strong>$163,000</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Multiple Headings Levels</h2>
+    <h1>Heading Level 1</h1>
+    <h2>Heading Level 2</h2>
+    <h3>Heading Level 3</h3>
+    <h4>Heading Level 4</h4>
+    
+    <h2>Long Paragraph for Wrapping Test</h2>
+    <p>
+        This is a very long paragraph that is designed to test text wrapping functionality when exporting to PDF or Word formats. 
+        The converter should automatically wrap this text to fit within the page margins without cutting off any words. 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    </p>
+    
+    <h2>Special Characters</h2>
+    <p>Testing special characters: © ® ™ • – — ... " " ' '</p>
+    <p>Currency: $ € £ ¥</p>
+    <p>Math symbols: + - × ÷ = ≠ < > ≤ ≥</p>
+    
+    <h2>Compliance Example</h2>
+    <p>
+        <strong>FINRA Rule 2210:</strong> Communications with the public must be <em>fair and balanced</em>, 
+        and must provide a <u>sound basis</u> for evaluating the facts in regard to any particular security or type of security, 
+        industry, or service.
+    </p>
+    
+    <h3>Checklist</h3>
+    <ul>
+        <li>Document has been reviewed for accuracy</li>
+        <li>All claims are substantiated</li>
+        <li>Risk disclosures are included</li>
+        <li>Required disclaimers are present</li>
+        <li>Document meets SEC and FINRA guidelines</li>
+    </ul>
+    
+    <h2>End of Test Document</h2>
+    <p>All formatting should be preserved when this document is exported to Word (DOCX) or PDF formats.</p>
+</body>
+</html>
+

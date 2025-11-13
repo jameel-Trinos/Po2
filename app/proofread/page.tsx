@@ -4,14 +4,23 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Upload } from 'lucide-react';
-import * as pdfjs from 'pdfjs-dist';
-// Set the worker source for pdfjs-dist
-pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+
+// Helper function to load pdfjs dynamically
+async function loadPdfJs() {
+  const pdfjs = await import('pdfjs-dist');
+  if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
+    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+  }
+  return pdfjs;
+}
 
 import { analyzePdfContent } from '../../lib/services/geminiService';
 import type { Suggestion } from '../../lib/types/proofreader';
 import SuggestionSidebar from '../../components/proofreader/SuggestionSidebar';
 import PdfViewer from '../../components/proofreader/PdfViewer';
+import ProofreadPdfViewer from '../../components/proofreader/ProofreadPdfViewer';
+import WordEditor from '@/components/editor/WordEditor';
+import mammoth from 'mammoth';
 
 // shadcn/ui components
 import { Button } from "@/components/ui/button";
@@ -38,12 +47,32 @@ const ProofreadPage: React.FC<{}> = () => {
   const [extractedText, setExtractedText] = useState<string>('');
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [progress, setProgress] = useState<number>(66);
+  const [docxHtml, setDocxHtml] = useState<string>('');
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [fileType, setFileType] = useState<'pdf' | 'docx' | null>(null);
+
+  // Cleanup blob URL on unmount
+  React.useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Revoke old blob URL if exists
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl);
+    }
+    
     setFile(e.target.files ? e.target.files[0] : null);
     setSuggestions([]); // Clear previous suggestions
     setError(null);
     setExtractedText(''); // Clear extracted text
+    setDocxHtml('');
+    setPdfUrl(null);
+    setFileType(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,29 +89,71 @@ const ProofreadPage: React.FC<{}> = () => {
     setProgress(12);
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
-      let fullText = '';
-      const pageTexts: string[] = [];
+      const lower = file.name.toLowerCase();
+      const isPdf = lower.endsWith('.pdf') || file.type === 'application/pdf';
+      const isDocx = lower.endsWith('.docx') || file.type.includes('officedocument.wordprocessingml');
 
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map((item: any) => item.str).join(' ');
-        pageTexts.push(pageText);
-        fullText += `--- PAGE ${i} ---\n${pageText}\n`;
-        // simple perceived progress
-        setProgress(Math.min(90, Math.round((i / pdf.numPages) * 80) + 10));
+      if (isPdf) {
+        const arrayBuffer = await file.arrayBuffer();
+        
+        // Dynamically load pdfjs
+        const pdfjs = await loadPdfJs();
+        const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
+
+        // Create a blob URL for the PDF viewer
+        const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+        setFileType('pdf');
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item: any) => item.str).join(' ');
+          fullText += `--- PAGE ${i} ---\n${pageText}\n`;
+          // simple perceived progress
+          setProgress(Math.min(90, Math.round((i / pdf.numPages) * 80) + 10));
+        }
+        setExtractedText(fullText); 
+        setProgress(92);
+
+        const aiSuggestions = await analyzePdfContent(fullText);
+        setSuggestions(aiSuggestions);
+        setProgress(100);
+      } else if (isDocx) {
+        // Convert DOCX to HTML, then extract text for analysis
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.convertToHtml({ arrayBuffer });
+        const html = result.value || '';
+        setDocxHtml(html);
+        setFileType('docx');
+        setProgress(82);
+
+        // Extract text content from HTML for analysis
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        const plainText = tmp.textContent || tmp.innerText || '';
+
+        // Call DOCX analyze endpoint
+        const resp = await fetch('/api/analyze/docx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: plainText }),
+        });
+        if (!resp.ok) {
+          throw new Error(`Analyze error ${resp.status}`);
+        }
+        const data = await resp.json();
+        const aiSuggestions: Suggestion[] = Array.isArray(data.suggestions) ? data.suggestions : [];
+        setSuggestions(aiSuggestions);
+        setProgress(100);
+      } else {
+        throw new Error('Unsupported file type. Please upload a PDF or DOCX.');
       }
-      setExtractedText(fullText); 
-      setProgress(92);
-
-      const aiSuggestions = await analyzePdfContent(fullText);
-      setSuggestions(aiSuggestions);
-      setProgress(100);
     } catch (e) {
       console.error("Failed to process file or get suggestions:", e);
-      setError("Could not process the file or get suggestions. Ensure it's a valid PDF file and your API_KEY is set.");
+      setError("Could not process the file or get suggestions. Ensure it's a valid PDF/DOCX and your API_KEY is set.");
     } finally {
       setIsLoading(false);
     }
@@ -149,7 +220,7 @@ const ProofreadPage: React.FC<{}> = () => {
             </Alert>
           )}
 
-          {!extractedText ? (
+          {!fileType ? (
             <form onSubmit={handleSubmit} className="space-y-6 mb-8">
               <div className="space-y-2">
                 <Label htmlFor="file-upload">Upload Document</Label>
@@ -158,7 +229,7 @@ const ProofreadPage: React.FC<{}> = () => {
                     id="file-upload"
                     name="file-upload"
                     type="file"
-                    accept="application/pdf"
+                    accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     onChange={handleFileChange}
                   />
                   <Button type="submit">
@@ -166,19 +237,34 @@ const ProofreadPage: React.FC<{}> = () => {
                     Analyze
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">PDF files only, up to 10MB</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">PDF or DOCX, up to 10MB</p>
                 {file && <p className="text-sm text-green-600 dark:text-green-400">{file.name}</p>}
               </div>
             </form>
-          ) : (
-            <PdfViewer
-              extractedText={extractedText}
+          ) : fileType === 'pdf' && pdfUrl ? (
+            <ProofreadPdfViewer
+              pdfUrl={pdfUrl}
               suggestions={suggestions}
               selectedSuggestion={selectedSuggestion}
               onSuggestionClick={setSelectedSuggestion}
               onApplyEdit={handleApplyEdit}
             />
-          )}
+          ) : fileType === 'docx' && docxHtml ? (
+            <WordEditor
+              wordHtml={docxHtml}
+              suggestions={suggestions}
+              onContentChange={setDocxHtml}
+              onApplySuggestion={(index) => {
+                const s = suggestions[index];
+                if (!s) return;
+                // Replace a single occurrence within HTML content
+                const escaped = s.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(escaped, 'i');
+                setDocxHtml(prev => prev.replace(regex, s.suggestion));
+                setSuggestions(prev => prev.filter((_, i) => i !== index));
+              }}
+            />
+          ) : null}
         </div>
 
         {/* Suggestion Sidebar Area */}
@@ -187,14 +273,10 @@ const ProofreadPage: React.FC<{}> = () => {
             suggestions={suggestions}
             onSuggestionClick={setSelectedSuggestion}
             selectedSuggestion={selectedSuggestion}
-            onEditPage={(pageNum) => {
-              // In a more sophisticated viewer, this would scroll to the page and allow inline editing
-              console.log(`Edit page ${pageNum} - not implemented for plain text viewer.`);
-              // For now, if a suggestion is clicked in the sidebar, we'll try to highlight it in the viewer
-              const suggestionToHighlight = suggestions.find(s => s.page === pageNum);
-              if (suggestionToHighlight) {
-                setSelectedSuggestion(suggestionToHighlight);
-              }
+            onApplySuggestion={(index) => {
+              const s = suggestions[index];
+              if (!s) return;
+              handleApplyEdit(s.page, s.original, s.suggestion);
             }}
           />
         </div>
