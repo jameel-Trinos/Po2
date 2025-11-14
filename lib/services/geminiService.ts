@@ -107,6 +107,8 @@ export async function analyzePdfContent(pdfTextByPage: string): Promise<Suggesti
         }
 
         const data = await response.json();
+        console.log('[geminiService] API response data:', data);
+        console.log('[geminiService] Suggestions count:', data.suggestions?.length || 0);
         return data.suggestions || [];
     } catch (error) {
         console.error("Error analyzing content with Gemini:", error);

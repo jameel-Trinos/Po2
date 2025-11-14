@@ -33,7 +33,7 @@ export default function WordEditor({
     // Highlight the selected suggestion
     if (selectedSuggestionIndex !== null && editorRef.current) {
       const s = suggestions[selectedSuggestionIndex];
-      if (s) {
+      if (s && s.original) {
         highlightText(s.original);
       }
     }
@@ -137,12 +137,9 @@ export default function WordEditor({
             ref={editorRef}
             contentEditable
             suppressContentEditableWarning
-            className="prose prose-zinc dark:prose-invert max-w-none min-h-[75vh] max-h-[75vh] overflow-y-auto p-6 bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md"
+            className="prose prose-zinc dark:prose-invert max-w-none min-h-[75vh] max-h-[75vh] overflow-y-auto p-6 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md"
             dangerouslySetInnerHTML={{ __html: content }}
             onInput={handleInput}
-            style={{
-              color: 'inherit',
-            }}
           />
         )}
       </CardContent>

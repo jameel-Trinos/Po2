@@ -16,7 +16,12 @@ export async function POST(request: NextRequest) {
 
     const { pdfTextByPage } = await request.json();
 
+    console.log('[API /analyze] Received request');
+    console.log('[API /analyze] Text length:', pdfTextByPage?.length || 0);
+    console.log('[API /analyze] Text preview:', pdfTextByPage?.substring(0, 200));
+
     if (!pdfTextByPage || typeof pdfTextByPage !== 'string') {
+      console.error('[API /analyze] Invalid request: pdfTextByPage is missing or not a string');
       return NextResponse.json(
         { error: "Invalid request: pdfTextByPage is required." },
         { status: 400 }
@@ -113,6 +118,7 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    console.log('[API /analyze] Calling Gemini AI...');
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
@@ -122,6 +128,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    console.log('[API /analyze] Received response from Gemini');
     // Check if response has text property
     if (!response || typeof response.text !== 'string') {
       console.error("Invalid response structure:", response);
@@ -160,6 +167,9 @@ export async function POST(request: NextRequest) {
       console.error("Response text:", jsonText);
       throw new Error(`Failed to parse AI response. The response may not be valid JSON.`);
     }
+    
+    console.log('[API /analyze] Parsed suggestions count:', suggestions.length);
+    console.log('[API /analyze] First suggestion:', suggestions[0]);
     
     return NextResponse.json({ suggestions });
   } catch (error) {

@@ -21,7 +21,7 @@ import type { Suggestion } from '../types/proofreader';
 async function loadPdfJs() {
   const pdfjs = await import('pdfjs-dist');
   if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   }
   return pdfjs;
 }
@@ -98,39 +98,48 @@ export async function convertPdfToHtml(pdfUrl: string): Promise<string> {
     const htmlParts: string[] = [];
 
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const textContent = await page.getTextContent();
-      
-      // Group text items into paragraphs based on vertical position
-      const lines: { y: number; items: any[] }[] = [];
-      let currentLine: { y: number; items: any[] } | null = null;
-      
-      textContent.items.forEach((item: any) => {
-        const y = item.transform[5];
+      try {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
         
-        if (!currentLine || Math.abs(currentLine.y - y) > 5) {
-          currentLine = { y, items: [item] };
-          lines.push(currentLine);
-        } else {
-          currentLine.items.push(item);
-        }
-      });
-
-      // Convert lines to HTML paragraphs
-      lines.forEach(line => {
-        const text = line.items.map((item: any) => item.str).join(' ').trim();
-        if (text) {
-          // Detect if it might be a heading (simple heuristic: short lines with larger font)
-          const avgFontSize = line.items.reduce((sum: number, item: any) => 
-            sum + (item.height || 12), 0) / line.items.length;
+        // Group text items into paragraphs based on vertical position
+        const lines: { y: number; items: any[] }[] = [];
+        let currentLine: { y: number; items: any[] } | null = null;
+        
+        textContent.items.forEach((item: any) => {
+          const y = item.transform[5];
           
-          if (avgFontSize > 16 && text.length < 100) {
-            htmlParts.push(`<h2>${text}</h2>`);
+          if (!currentLine || Math.abs(currentLine.y - y) > 5) {
+            currentLine = { y, items: [item] };
+            lines.push(currentLine);
           } else {
-            htmlParts.push(`<p>${text}</p>`);
+            currentLine.items.push(item);
           }
+        });
+
+        // Convert lines to HTML paragraphs
+        lines.forEach(line => {
+          const text = line.items.map((item: any) => item.str).join(' ').trim();
+          if (text) {
+            // Detect if it might be a heading (simple heuristic: short lines with larger font)
+            const avgFontSize = line.items.reduce((sum: number, item: any) => 
+              sum + (item.height || 12), 0) / line.items.length;
+            
+            if (avgFontSize > 16 && text.length < 100) {
+              htmlParts.push(`<h2>${text}</h2>`);
+            } else {
+              htmlParts.push(`<p>${text}</p>`);
+            }
+          }
+        });
+      } catch (err: any) {
+        // Silently ignore abort/cancellation errors
+        if (err?.name === 'AbortError' || err?.name === 'AbortException' || 
+            err?.message?.includes('cancelled') || err?.message?.includes('abort')) {
+          continue;
         }
-      });
+        throw err;
+      }
     }
 
     return htmlParts.join('\n');
@@ -726,13 +735,17 @@ async function htmlImageToWordImage(imgElement: HTMLImageElement): Promise<Image
     const width = imgElement.width || 400;
     const height = imgElement.height || 300;
     
+    // Determine image type from src
+    const imageType = src.toLowerCase().includes('png') ? 'png' : 'jpg';
+    
     return new ImageRun({
       data: imageBytes,
+      type: imageType,
       transformation: {
         width: Math.min(width, 600), // Max width 600px
         height: Math.min(height, 450), // Max height 450px
       },
-    });
+    }) as any;
   } catch (error) {
     console.error('Error embedding image:', error);
     return null;

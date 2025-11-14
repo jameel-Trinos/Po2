@@ -32,7 +32,9 @@ const EditableHighlight: React.FC<EditableHighlightProps> = ({ suggestion, box, 
     }, [wrapperRef, onCancelEdit]);
     
     const handleApply = () => {
-        onApplyEdit(suggestion.page, suggestion.original, editedText);
+        if (suggestion.original) {
+            onApplyEdit(suggestion.page, suggestion.original, editedText);
+        }
     };
 
     return (

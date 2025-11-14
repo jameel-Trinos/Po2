@@ -65,7 +65,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   }, []);
 
   useEffect(() => {
-    if (selectedSuggestion && viewerRef.current) {
+    if (selectedSuggestion && selectedSuggestion.original && viewerRef.current) {
       const pages = extractedText.split(/--- PAGE \d+ ---\n/).filter(Boolean);
       const targetPageContent = pages[selectedSuggestion.page - 1];
 
@@ -114,11 +114,11 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
           const pageNum = parseInt(pageNumberStr);
 
           // Highlight original text if it's the selected suggestion's page
-          const highlightedContent = selectedSuggestion && selectedSuggestion.page === pageNum
+          const highlightedContent = selectedSuggestion && selectedSuggestion.page === pageNum && selectedSuggestion.original
             ? currentPageContent.split(selectedSuggestion.original).map((part, i) => (
                 <React.Fragment key={i}>
                   {part}
-                  {i < currentPageContent.split(selectedSuggestion.original).length - 1 && (
+                  {i < currentPageContent.split(selectedSuggestion.original!).length - 1 && (
                     <span className="bg-yellow-300 dark:bg-yellow-700 bg-opacity-50 rounded px-0.5 cursor-pointer"
                           onClick={() => onSuggestionClick(selectedSuggestion)}>
                       {selectedSuggestion.original}

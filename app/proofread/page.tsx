@@ -9,7 +9,7 @@ import { Upload } from 'lucide-react';
 async function loadPdfJs() {
   const pdfjs = await import('pdfjs-dist');
   if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   }
   return pdfjs;
 }
@@ -118,7 +118,11 @@ const ProofreadPage: React.FC<{}> = () => {
         setExtractedText(fullText); 
         setProgress(92);
 
+        console.log('[ProofreadPage] Extracted text length:', fullText.length);
+        console.log('[ProofreadPage] Extracted text preview:', fullText.substring(0, 500));
         const aiSuggestions = await analyzePdfContent(fullText);
+        console.log('[ProofreadPage] PDF suggestions received:', aiSuggestions);
+        console.log('[ProofreadPage] Number of suggestions:', aiSuggestions.length);
         setSuggestions(aiSuggestions);
         setProgress(100);
       } else if (isDocx) {
@@ -135,6 +139,9 @@ const ProofreadPage: React.FC<{}> = () => {
         tmp.innerHTML = html;
         const plainText = tmp.textContent || tmp.innerText || '';
 
+        console.log('[ProofreadPage] DOCX extracted text length:', plainText.length);
+        console.log('[ProofreadPage] DOCX extracted text preview:', plainText.substring(0, 500));
+
         // Call DOCX analyze endpoint
         const resp = await fetch('/api/analyze/docx', {
           method: 'POST',
@@ -146,6 +153,8 @@ const ProofreadPage: React.FC<{}> = () => {
         }
         const data = await resp.json();
         const aiSuggestions: Suggestion[] = Array.isArray(data.suggestions) ? data.suggestions : [];
+        console.log('[ProofreadPage] DOCX suggestions received:', aiSuggestions);
+        console.log('[ProofreadPage] Number of suggestions:', aiSuggestions.length);
         setSuggestions(aiSuggestions);
         setProgress(100);
       } else {
@@ -253,12 +262,14 @@ const ProofreadPage: React.FC<{}> = () => {
             <WordEditor
               wordHtml={docxHtml}
               suggestions={suggestions}
+              selectedSuggestionIndex={selectedSuggestion ? suggestions.findIndex(s => s === selectedSuggestion) : null}
               onContentChange={setDocxHtml}
               onApplySuggestion={(index) => {
                 const s = suggestions[index];
                 if (!s) return;
                 // Replace a single occurrence within HTML content
-                const escaped = s.original.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const originalText = s.original || s.text;
+                const escaped = originalText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(escaped, 'i');
                 setDocxHtml(prev => prev.replace(regex, s.suggestion));
                 setSuggestions(prev => prev.filter((_, i) => i !== index));
@@ -276,7 +287,8 @@ const ProofreadPage: React.FC<{}> = () => {
             onApplySuggestion={(index) => {
               const s = suggestions[index];
               if (!s) return;
-              handleApplyEdit(s.page, s.original, s.suggestion);
+              const originalText = s.original || s.text;
+              handleApplyEdit(s.page, originalText, s.suggestion);
             }}
           />
         </div>

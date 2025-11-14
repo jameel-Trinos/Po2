@@ -19,6 +19,11 @@ const SuggestionSidebar: React.FC<SuggestionSidebarProps> = ({
   selectedSuggestion,
   onApplySuggestion 
 }) => {
+  React.useEffect(() => {
+    console.log('[SuggestionSidebar] Received suggestions:', suggestions);
+    console.log('[SuggestionSidebar] Number of suggestions:', suggestions?.length || 0);
+  }, [suggestions]);
+
   return (
     <Card className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-24">
       <CardHeader className="pb-3">

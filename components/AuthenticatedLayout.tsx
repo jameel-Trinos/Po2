@@ -7,7 +7,6 @@ import Sidebar from "./Sidebar";
 const authenticatedRoutes = [
   "/dashboard",
   "/editor",
-  "/upload",
   "/proofread",
   "/compliance-editor",
   "/settings",

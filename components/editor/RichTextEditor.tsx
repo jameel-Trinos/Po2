@@ -67,7 +67,9 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
     useEffect(() => {
       if (editor && selectedSuggestionIndex !== null && suggestions[selectedSuggestionIndex]) {
         const suggestion = suggestions[selectedSuggestionIndex];
-        highlightText(suggestion.original);
+        if (suggestion.original) {
+          highlightText(suggestion.original);
+        }
       }
     }, [selectedSuggestionIndex, suggestions, editor]);
 

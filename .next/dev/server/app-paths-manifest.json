@@ -1,12 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/analyze/route": "app/api/analyze/route.js",
   "/api/compliance/analyze/route": "app/api/compliance/analyze/route.js",
   "/api/compliance/apply-change/route": "app/api/compliance/apply-change/route.js",
-  "/api/pdf-to-docx/route": "app/api/pdf-to-docx/route.js",
-  "/compliance-editor/page": "app/compliance-editor/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/editor/page": "app/editor/page.js",
-  "/page": "app/page.js",
-  "/upload/page": "app/upload/page.js"
+  "/api/convert-pdf-to-docx/route": "app/api/convert-pdf-to-docx/route.js",
+  "/compliance-editor/page": "app/compliance-editor/page.js"
 }

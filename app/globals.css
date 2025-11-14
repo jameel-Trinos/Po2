@@ -66,166 +66,149 @@
   color: transparent !important;
 }
 
-/* TinyMCE Enhanced Toolbar Styles */
+/* TinyMCE Enhanced Toolbar Styles - Always Dark Mode */
 .tox-tinymce {
   border-radius: 12px !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
 }
 
-.tox .tox-menubar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
-  padding: 8px 12px !important;
+/* Force dark mode class - beautiful enhanced design */
+.force-dark-mode {
+  --editor-bg: linear-gradient(135deg, #1a1a1f 0%, #1e1e24 50%, #27272a 100%);
+  --editor-border: rgba(124, 58, 237, 0.4);
+  --editor-accent: #7c3aed;
+  --editor-accent-light: rgba(124, 58, 237, 0.15);
+  --editor-text: #f4f4f5;
+  --editor-text-secondary: #e4e4e7;
+}
+
+/* Enhanced menubar with gradient */
+.force-dark-mode .tox .tox-menubar {
+  background: linear-gradient(135deg, #1a1a1f 0%, #1e1e24 50%, #27272a 100%) !important;
+  border-bottom: 2px solid rgba(124, 58, 237, 0.3) !important;
+  padding: 10px 16px !important;
   backdrop-filter: blur(10px) !important;
 }
 
-.tox .tox-mbtn {
-  color: #ffffff !important;
+.force-dark-mode .tox .tox-mbtn {
+  color: #f4f4f5 !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  letter-spacing: 0.3px !important;
+}
+
+.force-dark-mode .tox .tox-mbtn:hover {
+  background: rgba(124, 58, 237, 0.2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3) !important;
+}
+
+.force-dark-mode .tox .tox-toolbar-overlord {
+  background: linear-gradient(135deg, #1e1e24 0%, #27272a 100%) !important;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.2) !important;
+}
+
+.force-dark-mode .tox .tox-toolbar__primary {
+  background: transparent !important;
+  padding: 12px !important;
+}
+
+.force-dark-mode .tox .tox-toolbar {
+  background: transparent !important;
+  padding: 6px !important;
+}
+
+.force-dark-mode .tox .tox-tbtn {
+  border-radius: 8px !important;
+  margin: 3px !important;
+  padding: 6px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.force-dark-mode .tox .tox-tbtn:hover {
+  background: rgba(124, 58, 237, 0.2) !important;
+  transform: scale(1.08) translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25) !important;
+}
+
+.force-dark-mode .tox .tox-tbtn--enabled,
+.force-dark-mode .tox .tox-tbtn--enabled:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(124, 58, 237, 0.4) 100%) !important;
+}
+
+.force-dark-mode .tox .tox-tbtn svg {
+  fill: #d4d4d8 !important;
+  transition: fill 0.2s ease !important;
+}
+
+.force-dark-mode .tox .tox-tbtn:hover svg,
+.force-dark-mode .tox .tox-tbtn--enabled svg {
+  fill: #c4b5fd !important;
+  filter: drop-shadow(0 0 4px rgba(196, 181, 253, 0.5)) !important;
+}
+
+/* Toolbar groups with accent borders */
+.force-dark-mode .tox .tox-toolbar__group {
+  border-right: 1px solid rgba(124, 58, 237, 0.3) !important;
+  padding: 0 6px !important;
+}
+
+/* Font and size selectors with enhanced styling */
+.force-dark-mode .tox .tox-tbtn__select-label {
+  color: #e4e4e7 !important;
   font-weight: 600 !important;
   font-size: 13px !important;
-  padding: 6px 12px !important;
-  border-radius: 6px !important;
+}
+
+/* Split buttons */
+.force-dark-mode .tox .tox-split-button:hover {
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3) !important;
+}
+
+/* Toolbar scrollbar with custom styling */
+.force-dark-mode .tox .tox-toolbar__overflow::-webkit-scrollbar {
+  height: 8px !important;
+}
+
+.force-dark-mode .tox .tox-toolbar__overflow::-webkit-scrollbar-track {
+  background: #1e1e24 !important;
+  border-radius: 4px !important;
+}
+
+.force-dark-mode .tox .tox-toolbar__overflow::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%) !important;
+  border-radius: 4px !important;
+  transition: background 0.2s ease !important;
+}
+
+.force-dark-mode .tox .tox-toolbar__overflow::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #8b5cf6 0%, #c4b5fd 100%) !important;
+}
+
+/* Editor content area */
+.force-dark-mode .tox .tox-edit-area {
+  border-top: 1px solid rgba(124, 58, 237, 0.2) !important;
+}
+
+/* Dropdowns and menus with enhanced styling */
+.force-dark-mode .tox .tox-collection,
+.force-dark-mode .tox .tox-menu {
+  background: #27272a !important;
+  border: 1px solid rgba(124, 58, 237, 0.4) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 58, 237, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.force-dark-mode .tox .tox-collection__item {
+  color: #e4e4e7 !important;
   transition: all 0.2s ease !important;
 }
 
-.tox .tox-mbtn:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  transform: translateY(-1px) !important;
-}
-
-.tox .tox-mbtn:active {
-  background: rgba(255, 255, 255, 0.3) !important;
-}
-
-.tox .tox-toolbar-overlord {
-  background: linear-gradient(to bottom, #f8fafc, #f1f5f9) !important;
-  border-bottom: 1px solid #e2e8f0 !important;
-}
-
-.tox .tox-toolbar__primary {
-  background: transparent !important;
-  padding: 10px 12px !important;
-}
-
-.tox .tox-toolbar {
-  background: transparent !important;
-  padding: 4px 8px !important;
-}
-
-.tox .tox-tbtn {
-  border-radius: 6px !important;
-  margin: 2px !important;
-  transition: all 0.2s ease !important;
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-}
-
-.tox .tox-tbtn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: #ffffff !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
-  border-color: transparent !important;
-}
-
-.tox .tox-tbtn:active {
-  transform: translateY(0px) !important;
-}
-
-.tox .tox-tbtn--enabled,
-.tox .tox-tbtn--enabled:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
-
-.tox .tox-tbtn svg {
-  fill: #475569 !important;
-}
-
-.tox .tox-tbtn:hover svg,
-.tox .tox-tbtn--enabled svg {
-  fill: #ffffff !important;
-}
-
-.tox .tox-split-button {
-  border-radius: 6px !important;
-  overflow: hidden !important;
-}
-
-.tox .tox-toolbar__group {
-  border-right: 1px solid #e2e8f0 !important;
-  padding: 0 8px !important;
-  margin: 0 4px !important;
-}
-
-.tox .tox-toolbar__group:last-child {
-  border-right: none !important;
-}
-
-/* Dark mode styles for TinyMCE */
-.dark .tox .tox-toolbar-overlord {
-  background: linear-gradient(to bottom, #1e293b, #0f172a) !important;
-  border-bottom: 1px solid #334155 !important;
-}
-
-.dark .tox .tox-tbtn {
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-}
-
-.dark .tox .tox-tbtn:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-}
-
-.dark .tox .tox-tbtn svg {
-  fill: #cbd5e1 !important;
-}
-
-.dark .tox .tox-toolbar__group {
-  border-right-color: #334155 !important;
-}
-
-/* Font selector styling */
-.tox .tox-selectfield select,
-.tox .tox-listboxfield .tox-listbox--select {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 6px !important;
-  padding: 6px 12px !important;
-  font-weight: 500 !important;
-  transition: all 0.2s ease !important;
-}
-
-.tox .tox-selectfield select:hover,
-.tox .tox-listboxfield .tox-listbox--select:hover {
-  border-color: #667eea !important;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
-}
-
-.dark .tox .tox-selectfield select,
-.dark .tox .tox-listboxfield .tox-listbox--select {
-  background: #1e293b !important;
-  border-color: #334155 !important;
-  color: #cbd5e1 !important;
-}
-
-/* Toolbar scrollbar styling */
-.tox .tox-toolbar__overflow::-webkit-scrollbar {
-  height: 6px !important;
-}
-
-.tox .tox-toolbar__overflow::-webkit-scrollbar-track {
-  background: #f1f5f9 !important;
-  border-radius: 3px !important;
-}
-
-.tox .tox-toolbar__overflow::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  border-radius: 3px !important;
-}
-
-.tox .tox-toolbar__overflow::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+.force-dark-mode .tox .tox-collection__item:hover {
+  background: rgba(124, 58, 237, 0.2) !important;
 }

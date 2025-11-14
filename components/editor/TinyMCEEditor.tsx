@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, forwardRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import type { Editor as TinyMCEEditorType } from 'tinymce';
 import { Card, CardContent } from '@/components/ui/card';
@@ -24,6 +24,8 @@ export interface TinyMCEEditorHandle {
 const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
   ({ content, onContentChange, suggestions = [], selectedSuggestionIndex = null, className }, ref) => {
     const editorRef = useRef<TinyMCEEditorType | null>(null);
+    // Force dark mode always - never change based on system theme
+    const isDarkMode = true;
 
     // Expose methods to parent via ref
     useImperativeHandle(ref, () => ({
@@ -66,14 +68,16 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
     };
 
     return (
-      <Card className={`border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 ${className || ''}`}>
-        <CardContent className="p-0">
-          <Editor
-            apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'no-api-key'}
-            onInit={handleEditorInit}
-            value={content}
-            onEditorChange={handleEditorChange}
-            init={{
+      <div className="force-dark-mode">
+        <Card className={`border-zinc-700 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-xl ${className || ''}`}>
+          <CardContent className="p-0">
+            <Editor
+              key="dark"
+              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY || 'no-api-key'}
+              onInit={handleEditorInit}
+              value={content}
+              onEditorChange={handleEditorChange}
+              init={{
               height: '70vh',
               menubar: 'file edit view insert format tools table help',
               plugins: [
@@ -97,7 +101,8 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
                   font-size: 16px; 
                   padding: 30px; 
                   line-height: 1.7;
-                  color: #1e293b;
+                  color: #f1f5f9;
+                  background-color: #18181b;
                   max-width: 900px;
                   margin: 0 auto;
                 }
@@ -106,26 +111,27 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
                   margin-bottom: 0.5em;
                   font-weight: 600;
                   line-height: 1.3;
-                  color: #0f172a;
+                  color: #f8fafc;
                 }
                 p {
                   margin-bottom: 1em;
+                  color: #f1f5f9;
                 }
                 a {
-                  color: #667eea;
+                  color: #818cf8;
                   text-decoration: none;
-                  border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+                  border-bottom: 1px solid rgba(129, 140, 248, 0.3);
                   transition: border-color 0.2s ease;
                 }
                 a:hover {
-                  border-bottom-color: #667eea;
+                  border-bottom-color: #818cf8;
                 }
               `,
-              skin: typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oxide-dark' : 'oxide',
-              content_css: typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+              skin: 'oxide-dark',
+              content_css: 'dark',
               branding: false,
               promotion: false,
-              // Hide promotion elements via CSS
+              // Hide promotion elements via CSS and ensure proper theming
               init_instance_callback: (editor) => {
                 const style = document.createElement('style');
                 style.textContent = `
@@ -133,6 +139,72 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
                   .tox-promotion-button,
                   .tox-statusbar__branding {
                     display: none !important;
+                  }
+                  /* Force dark mode always - beautiful enhanced styling */
+                  .force-dark-mode .tox .tox-menubar,
+                  .force-dark-mode .tox .tox-toolbar,
+                  .force-dark-mode .tox .tox-toolbar__primary {
+                    background: linear-gradient(135deg, #1e1e24 0%, #27272a 100%) !important;
+                    border-bottom: 1px solid rgba(124, 58, 237, 0.2) !important;
+                  }
+                  .force-dark-mode .tox .tox-toolbar__group,
+                  .force-dark-mode .tox .tox-split-button,
+                  .force-dark-mode .tox .tox-tbtn {
+                    color: #e4e4e7 !important;
+                  }
+                  .force-dark-mode .tox .tox-tbtn__select-label,
+                  .force-dark-mode .tox .tox-tbtn--select {
+                    color: #e4e4e7 !important;
+                    font-weight: 500 !important;
+                  }
+                  /* Enhanced menubar styling */
+                  .force-dark-mode .tox .tox-mbtn {
+                    color: #f4f4f5 !important;
+                    font-weight: 500 !important;
+                    padding: 8px 14px !important;
+                    border-radius: 6px !important;
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                  }
+                  .force-dark-mode .tox .tox-mbtn:hover {
+                    background: rgba(124, 58, 237, 0.15) !important;
+                    transform: translateY(-1px) !important;
+                  }
+                  /* Enhanced toolbar button styling */
+                  .force-dark-mode .tox .tox-tbtn {
+                    border-radius: 6px !important;
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                  }
+                  .force-dark-mode .tox .tox-tbtn:hover {
+                    background: rgba(124, 58, 237, 0.15) !important;
+                    transform: scale(1.05) !important;
+                  }
+                  .force-dark-mode .tox .tox-tbtn--enabled {
+                    background: rgba(124, 58, 237, 0.2) !important;
+                  }
+                  .force-dark-mode .tox .tox-tbtn svg {
+                    fill: #d4d4d8 !important;
+                  }
+                  .force-dark-mode .tox .tox-tbtn:hover svg,
+                  .force-dark-mode .tox .tox-tbtn--enabled svg {
+                    fill: #c4b5fd !important;
+                  }
+                  /* Group separators */
+                  .force-dark-mode .tox .tox-toolbar__group {
+                    border-right: 1px solid rgba(124, 58, 237, 0.2) !important;
+                  }
+                  /* Editor container */
+                  .force-dark-mode .tox-tinymce {
+                    border: 1px solid rgba(124, 58, 237, 0.3) !important;
+                    border-radius: 12px !important;
+                    overflow: hidden !important;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 58, 237, 0.1) !important;
+                  }
+                  /* Dropdowns and panels */
+                  .force-dark-mode .tox .tox-collection,
+                  .force-dark-mode .tox .tox-menu,
+                  .force-dark-mode .tox .tox-dialog {
+                    background: #27272a !important;
+                    border: 1px solid rgba(124, 58, 237, 0.3) !important;
                   }
                 `;
                 document.head.appendChild(style);
@@ -163,6 +235,7 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
           />
         </CardContent>
       </Card>
+      </div>
     );
   }
 );

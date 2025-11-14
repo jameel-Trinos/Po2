@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 async function loadPdfJs() {
 	const pdfjs = await import('pdfjs-dist');
 	if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-		pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+		pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 	}
 	return pdfjs;
 }
@@ -34,6 +34,7 @@ const PdfViewerPdfJs: React.FC<PdfViewerPdfJsProps> = ({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRefs = useRef<Map<number, HTMLCanvasElement>>(new Map());
 	const renderTasksRef = useRef<Map<number, any>>(new Map());
+	const textLayerTasksRef = useRef<Map<number, AbortController>>(new Map());
 	const renderingInProgressRef = useRef<Map<number, boolean>>(new Map());
 	const [pdfDoc, setPdfDoc] = useState<any | null>(null);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -172,6 +173,17 @@ const PdfViewerPdfJs: React.FC<PdfViewerPdfJsProps> = ({
 			});
 			await Promise.all(cancelPromises);
 			renderTasksRef.current.clear();
+			
+			// Cancel text layer tasks
+			textLayerTasksRef.current.forEach((controller) => {
+				try {
+					controller.abort();
+				} catch (e) {
+					// Ignore errors during cancellation
+				}
+			});
+			textLayerTasksRef.current.clear();
+			
 			renderingInProgressRef.current.clear();
 			setRenderedPages(new Set());
 		};
@@ -191,6 +203,17 @@ const PdfViewerPdfJs: React.FC<PdfViewerPdfJsProps> = ({
 				}
 			});
 			renderTasksRef.current.clear();
+			
+			// Cancel text layer tasks
+			textLayerTasksRef.current.forEach((controller) => {
+				try {
+					controller.abort();
+				} catch (e) {
+					// Ignore errors during cleanup
+				}
+			});
+			textLayerTasksRef.current.clear();
+			
 			renderingInProgressRef.current.clear();
 		};
 	}, []);
@@ -259,8 +282,15 @@ const PdfViewerPdfJs: React.FC<PdfViewerPdfJsProps> = ({
 			},
 			search: async (query: string) => {
 				// Basic text search implementation
+				const searchAbortController = new AbortController();
+				
 				try {
 					for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+						// Check if search was aborted
+						if (searchAbortController.signal.aborted) {
+							return null;
+						}
+						
 						const page = await pdfDoc.getPage(pageNum);
 						const textContent = await page.getTextContent();
 						const text = textContent.items.map((item: any) => item.str).join(' ');
@@ -270,7 +300,12 @@ const PdfViewerPdfJs: React.FC<PdfViewerPdfJsProps> = ({
 						}
 					}
 					return null;
-				} catch (err) {
+				} catch (err: any) {
+					// Silently ignore abort-related errors
+					if (err?.name === 'AbortError' || err?.name === 'AbortException' || 
+					    err?.message?.includes('cancelled') || err?.message?.includes('abort')) {
+						return null;
+					}
 					console.error('[PdfViewerPdfJs] Search error:', err);
 					return null;
 				}

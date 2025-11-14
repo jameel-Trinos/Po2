@@ -5,8 +5,6 @@ import {
   Search,
   Check,
   FolderOpen,
-  Plus,
-  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -65,7 +63,7 @@ export default function DashboardPage() {
   }, [getProjects]);
 
   // Combine saved projects with default projects (for demo purposes)
-  const allProjects = projects.length > 0 
+  const allProjects: Array<{ id: string; name: string; status: string; lastActivity: string; collaborators: number; documentId?: string }> = projects.length > 0 
     ? projects 
     : ["Blackrock Test Case", "TC17", "TC13", "TC12", "TC10", "TC8"].map((name, index) => ({
         id: `default-${index}`,
@@ -150,26 +148,6 @@ export default function DashboardPage() {
 
         {/* Right Sidebar */}
         <div className="w-80 flex-shrink-0 space-y-8">
-          {/* Upload Card */}
-          <Card className="bg-gradient-to-br from-teal-400 to-cyan-500 text-white p-6 rounded-2xl text-center border-0">
-            <CardContent className="p-0">
-              <div className="mb-4 inline-block p-4 border-2 border-dashed border-white/50 rounded-xl">
-                <Plus className="h-10 w-10" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Want to kickstart a new project?</h3>
-              <p className="text-sm text-white/80 mb-6">Get started by uploading a document</p>
-              <Button
-                asChild
-                className="w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2"
-              >
-                <Link href="/upload">
-                  <Upload className="h-5 w-5" />
-                  Upload a document
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
           {/* Version Comparison Card */}
           <Card className="border border-white/10 bg-white/5 p-6 rounded-2xl">
             <CardHeader className="p-0">

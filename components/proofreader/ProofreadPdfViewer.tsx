@@ -11,7 +11,7 @@ import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from 'lucide-react';
 async function loadPdfJs() {
   const pdfjs = await import('pdfjs-dist');
   if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   }
   return pdfjs;
 }
@@ -43,6 +43,7 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
   const canvasRefs = useRef<Map<number, HTMLCanvasElement>>(new Map());
   const textLayerRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const renderTasksRef = useRef<Map<number, any>>(new Map());
+  const textLayerTasksRef = useRef<Map<number, AbortController>>(new Map());
   const renderingInProgressRef = useRef<Map<number, boolean>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
@@ -83,6 +84,17 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
         }
       });
       renderTasksRef.current.clear();
+      
+      // Cleanup text layer tasks
+      textLayerTasksRef.current.forEach((controller) => {
+        try {
+          controller.abort();
+        } catch (e) {
+          // Ignore
+        }
+      });
+      textLayerTasksRef.current.clear();
+      
       renderingInProgressRef.current.clear();
     };
   }, [pdfUrl]);
@@ -104,6 +116,17 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
       });
       await Promise.all(cancelPromises);
       renderTasksRef.current.clear();
+      
+      // Cancel text layer tasks
+      textLayerTasksRef.current.forEach((controller) => {
+        try {
+          controller.abort();
+        } catch (e) {
+          // Ignore errors during cancellation
+        }
+      });
+      textLayerTasksRef.current.clear();
+      
       renderingInProgressRef.current.clear();
       setRenderedPages(new Set());
       setTextLayerLoaded(new Set());
@@ -201,11 +224,40 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
     const textLayerDiv = textLayerRefs.current.get(pageNum);
     if (!textLayerDiv) return;
 
+    // Cancel any existing text layer task for this page
+    const existingController = textLayerTasksRef.current.get(pageNum);
+    if (existingController) {
+      existingController.abort();
+      textLayerTasksRef.current.delete(pageNum);
+    }
+
+    // Create new AbortController for this text layer task
+    const abortController = new AbortController();
+    textLayerTasksRef.current.set(pageNum, abortController);
+
     try {
+      // Check if already aborted before starting async work
+      if (abortController.signal.aborted) {
+        textLayerTasksRef.current.delete(pageNum);
+        return;
+      }
+
       const textContent = await page.getTextContent();
+      
+      // Check again after async operation
+      if (abortController.signal.aborted) {
+        textLayerTasksRef.current.delete(pageNum);
+        return;
+      }
       
       // Dynamically load pdfjs for Util
       const pdfjs = await loadPdfJs();
+      
+      // Check again after loading pdfjs
+      if (abortController.signal.aborted) {
+        textLayerTasksRef.current.delete(pageNum);
+        return;
+      }
       
       // Clear existing text layer
       textLayerDiv.innerHTML = '';
@@ -214,6 +266,11 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
 
       // Render text items
       textContent.items.forEach((item: any) => {
+        // Check if aborted during iteration
+        if (abortController.signal.aborted) {
+          return;
+        }
+
         const textDiv = document.createElement('div');
         const tx = pdfjs.Util.transform(
           pdfjs.Util.transform(viewport.transform, item.transform),
@@ -232,9 +289,27 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
         textLayerDiv.appendChild(textDiv);
       });
 
-      setTextLayerLoaded(prev => new Set([...prev, pageNum]));
-    } catch (err) {
-      console.error(`[ProofreadPdfViewer] Error rendering text layer for page ${pageNum}:`, err);
+      // Only update state if not aborted
+      if (!abortController.signal.aborted) {
+        setTextLayerLoaded(prev => new Set([...prev, pageNum]));
+      }
+      
+      // Clean up the controller
+      textLayerTasksRef.current.delete(pageNum);
+    } catch (err: any) {
+      // Clean up the controller
+      textLayerTasksRef.current.delete(pageNum);
+      
+      // Silently ignore AbortError and other expected cancellation errors
+      if (err?.name === 'AbortError' || err?.name === 'AbortException') {
+        // Task was cancelled, this is expected
+        return;
+      }
+      
+      // Only log unexpected errors
+      if (err?.message && !err.message.includes('cancelled') && !err.message.includes('abort')) {
+        console.error(`[ProofreadPdfViewer] Error rendering text layer for page ${pageNum}:`, err);
+      }
     }
   };
 
@@ -263,7 +338,7 @@ const ProofreadPdfViewer: React.FC<ProofreadPdfViewerProps> = ({
 
   // Scroll to selected suggestion
   useEffect(() => {
-    if (selectedSuggestion && selectedSuggestion.page) {
+    if (selectedSuggestion && selectedSuggestion.page && selectedSuggestion.original) {
       const pageDiv = pageRefs.current.get(selectedSuggestion.page);
       if (pageDiv) {
         pageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });

@@ -72,7 +72,7 @@ const EditorSuggestionsPanel: React.FC<EditorSuggestionsPanelProps> = ({
           ) : (
             suggestions.map((s, i) => (
               <div
-                key={`${s.page}-${i}-${s.original.slice(0, 16)}`}
+                key={`${s.page}-${i}-${s.original?.slice(0, 16) || 'suggestion'}`}
                 className={`rounded-md border p-3 cursor-pointer transition ${
                   selectedIndex === i
                     ? 'border-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20'

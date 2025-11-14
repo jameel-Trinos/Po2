@@ -1,3 +1,0 @@
-module.exports=[874,(a,b,c)=>{b.exports=a.x("buffer",()=>require("buffer"))},92509,(a,b,c)=>{b.exports=a.x("url",()=>require("url"))},46786,(a,b,c)=>{b.exports=a.x("os",()=>require("os"))},24361,(a,b,c)=>{b.exports=a.x("util",()=>require("util"))},14747,(a,b,c)=>{b.exports=a.x("path",()=>require("path"))},27699,(a,b,c)=>{b.exports=a.x("events",()=>require("events"))},61751,a=>{a.v(b=>Promise.all(["server/chunks/ssr/node_modules_pdfjs-dist_build_pdf_mjs_74288fa9._.js"].map(b=>a.l(b))).then(()=>b(68062)))}];
-
-//# sourceMappingURL=%5Broot-of-the-server%5D__c8b48a63._.js.map

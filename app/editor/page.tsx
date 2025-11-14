@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAppContext } from '../../lib/AppContext';
 import { motion } from 'framer-motion';
@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Download, Loader2, FileText, ArrowLeftRight, FileDown } from 'lucide-react';
+import { Download, Loader2, FileText, ArrowLeftRight, FileDown, ChevronDown } from 'lucide-react';
 import type { Suggestion } from '../../lib/types/proofreader';
 import { analyzePdfContent } from '../../lib/services/geminiService';
 import { downloadPdf, generatePdfFilename } from '../../lib/utils/pdfDownload';
@@ -21,12 +21,13 @@ import WordEditor from '../../components/editor/WordEditor';
 import dynamic from 'next/dynamic';
 import { wordBlobToHtml, htmlToWordBlob, convertWordToPdf } from '../../lib/services/pdfWordConverter';
 import { toast } from 'sonner';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 // Helper function to load pdfjs dynamically
 async function loadPdfJs() {
   const pdfjs = await import('pdfjs-dist');
   if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-    pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
+    pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   }
   return pdfjs;
 }
@@ -44,7 +45,7 @@ const PdfViewerPdfJs = dynamic(() => import('@/components/editor/PdfViewerPdfJs'
   )
 });
 
-export default function EditorPage() {
+function EditorContent() {
   const searchParams = useSearchParams();
   const documentId = searchParams.get('documentId');
   const { 
@@ -239,7 +240,20 @@ export default function EditorPage() {
     }
   };
 
-  const handleConvertPdfToWord = async () => {
+  // Helper function to convert DOCX blob to HTML using mammoth
+  const convertDocxToHtml = async (docxBlob: Blob): Promise<string> => {
+    try {
+      const mammoth = await import('mammoth');
+      const arrayBuffer = await docxBlob.arrayBuffer();
+      const result = await mammoth.convertToHtml({ arrayBuffer });
+      return result.value;
+    } catch (error) {
+      console.error('Error converting DOCX to HTML:', error);
+      throw new Error('Failed to convert Word document to editable format');
+    }
+  };
+
+  const handleConvertPdfToWord = async (mode: 'download' | 'edit' = 'download') => {
     if (!documentId || !pdfUrl) {
       toast.error('PDF not available for conversion');
       return;
@@ -247,6 +261,13 @@ export default function EditorPage() {
 
     setIsConverting(true);
     setError(null);
+
+    // Show appropriate loading message
+    const loadingToast = toast.loading(
+      mode === 'edit' 
+        ? 'Converting PDF to editable Word format...' 
+        : 'Converting PDF to Word...'
+    );
 
     try {
       // Fetch the PDF file
@@ -312,22 +333,98 @@ export default function EditorPage() {
       // Get the DOCX blob
       const docxBlob = await convertResponse.blob();
       
-      // Download the DOCX file
+      if (mode === 'download') {
+        // Download the DOCX file
+        const url = window.URL.createObjectURL(docxBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename.replace(/\.pdf$/i, '.docx');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        toast.success('PDF converted to Word and downloaded', { id: loadingToast });
+      } else {
+        // Convert DOCX to HTML and open in editor
+        toast.loading('Opening document in editor...', { id: loadingToast });
+        
+        const htmlContent = await convertDocxToHtml(docxBlob);
+        
+        // Store the DOCX blob for later use
+        setWordBlob(docxBlob);
+        setWordHtml(htmlContent);
+        setEditingMode('word');
+        
+        toast.success('Document ready for editing! You can now apply AI suggestions.', { id: loadingToast });
+      }
+    } catch (err) {
+      console.error('Error converting PDF to Word:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to convert PDF to Word';
+      toast.error(errorMessage, { id: loadingToast });
+      setError(errorMessage);
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const handleDownloadWordDocument = async () => {
+    if (!wordHtml) {
+      toast.error('No document content to download');
+      return;
+    }
+
+    const loadingToast = toast.loading('Preparing Word document for download...');
+    setIsConverting(true);
+
+    try {
+      // Convert HTML back to Word blob
+      const docxBlob = await htmlToWordBlob(wordHtml);
+      
+      // Download the file
       const url = window.URL.createObjectURL(docxBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = filename.replace(/\.pdf$/i, '.docx');
+      const filename = projectName ? `${projectName}.docx` : 'document.docx';
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
 
-      toast.success('PDF converted to Word and downloaded');
+      toast.success('Word document downloaded successfully', { id: loadingToast });
     } catch (err) {
-      console.error('Error converting PDF to Word:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to convert PDF to Word';
-      toast.error(errorMessage);
-      setError(errorMessage);
+      console.error('Error downloading Word document:', err);
+      toast.error('Failed to download Word document', { id: loadingToast });
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const handleDownloadAsPdf = async () => {
+    if (!wordHtml) {
+      toast.error('No document content to download');
+      return;
+    }
+
+    const loadingToast = toast.loading('Converting to PDF...');
+    setIsConverting(true);
+
+    try {
+      // Convert HTML to Word blob first
+      const docxBlob = await htmlToWordBlob(wordHtml);
+      
+      // Convert Word to PDF
+      const pdfUrl = await convertWordToPdf(docxBlob);
+      
+      // Download the PDF
+      const filename = generatePdfFilename(projectName, 'edited');
+      downloadPdf(pdfUrl, filename);
+
+      toast.success('PDF downloaded successfully', { id: loadingToast });
+    } catch (err) {
+      console.error('Error converting to PDF:', err);
+      toast.error('Failed to convert to PDF', { id: loadingToast });
     } finally {
       setIsConverting(false);
     }
@@ -391,66 +488,137 @@ export default function EditorPage() {
                 <CardTitle className="text-gray-900 dark:text-gray-50">
                   {editingMode === 'word' ? 'Document Editor' : 'Document Viewer'}
                 </CardTitle>
-                <div className="flex gap-2">
-                  {editingMode === 'pdf' && pdfUrl && (
+                <div className="flex gap-2 flex-wrap">
+                  {editingMode === 'pdf' && (
+                    <>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={isConverting || !pdfUrl}
+                            className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                          >
+                            {isConverting ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <FileDown className="h-4 w-4 mr-2" />
+                            )}
+                            Convert to Word
+                            <ChevronDown className="h-3 w-3 ml-2" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                          <DropdownMenuItem 
+                            onClick={() => handleConvertPdfToWord('edit')}
+                            disabled={isConverting}
+                            className="cursor-pointer"
+                          >
+                            <FileText className="h-4 w-4 mr-2" />
+                            <div className="flex flex-col">
+                              <span className="font-medium">Edit as Word</span>
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                Convert and open in editor
+                              </span>
+                            </div>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleConvertPdfToWord('download')}
+                            disabled={isConverting}
+                            className="cursor-pointer"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            <div className="flex flex-col">
+                              <span className="font-medium">Download as Word</span>
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                Save .docx file to device
+                              </span>
+                            </div>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </>
+                  )}
+                  {editingMode === 'word' && (
                     <>
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        onClick={handleConvertToWord}
+                        onClick={handleConvertBackToPdf}
                         disabled={isConverting}
                       >
                         {isConverting ? (
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         ) : (
-                          <FileText className="h-4 w-4 mr-2" />
+                          <ArrowLeftRight className="h-4 w-4 mr-2" />
                         )}
-                        Edit Document
+                        Back to PDF
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={handleConvertPdfToWord}
-                        disabled={isConverting}
-                      >
-                        {isConverting ? (
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                          <FileDown className="h-4 w-4 mr-2" />
-                        )}
-                        Convert to Word
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            disabled={isConverting}
+                            className="bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Download
+                            <ChevronDown className="h-3 w-3 ml-2" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                          <DropdownMenuItem 
+                            onClick={handleDownloadWordDocument}
+                            disabled={isConverting}
+                            className="cursor-pointer"
+                          >
+                            <FileText className="h-4 w-4 mr-2" />
+                            <div className="flex flex-col">
+                              <span className="font-medium">Download as Word</span>
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                Save edited .docx file
+                              </span>
+                            </div>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={handleDownloadAsPdf}
+                            disabled={isConverting}
+                            className="cursor-pointer"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            <div className="flex flex-col">
+                              <span className="font-medium">Download as PDF</span>
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                Convert and save as PDF
+                              </span>
+                            </div>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </>
                   )}
-                  {editingMode === 'word' && (
+                  {editingMode === 'pdf' && (
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={handleConvertBackToPdf}
-                      disabled={isConverting}
+                      onClick={handleDownloadPdf} 
+                      disabled={!pdfUrl}
                     >
-                      {isConverting ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <ArrowLeftRight className="h-4 w-4 mr-2" />
-                      )}
-                      Back to PDF
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
                     </Button>
                   )}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleDownloadPdf} 
-                    disabled={!pdfUrl}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </Button>
                 </div>
               </div>
               {editingMode === 'pdf' && (
                 <Badge variant="secondary" className="mt-2">
-                  Click "Edit Document" to apply suggestions
+                  Click "Convert to Word" → "Edit as Word" to apply AI suggestions
+                </Badge>
+              )}
+              {editingMode === 'word' && (
+                <Badge variant="secondary" className="mt-2 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800">
+                  Editing Mode - Apply suggestions and download as Word or PDF
                 </Badge>
               )}
             </CardHeader>
@@ -524,5 +692,24 @@ export default function EditorPage() {
         </aside>
       </div>
     </motion.div>
+  );
+}
+
+export default function EditorPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center h-screen bg-zinc-50 dark:bg-zinc-950 text-center px-6">
+        <Card className="w-full max-w-md border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <CardHeader>
+            <CardTitle className="text-gray-900 dark:text-gray-50">Loading...</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900 dark:border-zinc-100 mx-auto"></div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <EditorContent />
+    </Suspense>
   );
 }

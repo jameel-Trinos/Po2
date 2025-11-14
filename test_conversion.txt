@@ -1,0 +1,18 @@
+Test PDF Content for Conversion
+
+This is a sample PDF document to test the PDF to DOCX conversion feature.
+
+It includes:
+- Simple text content
+- Multiple paragraphs  
+- Basic formatting
+
+Section 1: Introduction
+This is the introduction section of the test document.
+
+Section 2: Main Content
+This section contains the main content that should be preserved during conversion.
+
+Section 3: Conclusion
+This concludes our test document for PDF to DOCX conversion using LibreOffice.
+
