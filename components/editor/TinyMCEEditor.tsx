@@ -103,7 +103,7 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
                   line-height: 1.7;
                   color: #f1f5f9;
                   background-color: #18181b;
-                  max-width: 900px;
+                  max-width: 1100px;
                   margin: 0 auto;
                 }
                 h1, h2, h3, h4, h5, h6 {
@@ -116,6 +116,7 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
                 p {
                   margin-bottom: 1em;
                   color: #f1f5f9;
+                  line-height: 1.6;
                 }
                 a {
                   color: #818cf8;
@@ -125,6 +126,81 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
                 }
                 a:hover {
                   border-bottom-color: #818cf8;
+                }
+                /* Table styling for better formatting */
+                table {
+                  border-collapse: collapse;
+                  width: 100%;
+                  margin: 1.5rem 0;
+                  border: 1px solid #3f3f46;
+                  background-color: #27272a;
+                  overflow: hidden;
+                  border-radius: 8px;
+                }
+                th {
+                  background-color: #3f3f46;
+                  color: #f8fafc;
+                  font-weight: 600;
+                  padding: 12px 16px;
+                  text-align: left;
+                  border: 1px solid #52525b;
+                }
+                td {
+                  padding: 10px 16px;
+                  border: 1px solid #3f3f46;
+                  color: #e4e4e7;
+                  vertical-align: top;
+                }
+                tr:nth-child(even) {
+                  background-color: #2d2d31;
+                }
+                tr:hover {
+                  background-color: #35353a;
+                }
+                /* Image styling for proper display */
+                img {
+                  max-width: 100%;
+                  height: auto;
+                  display: block;
+                  margin: 1.5rem auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                }
+                /* List styling */
+                ul, ol {
+                  margin: 1rem 0;
+                  padding-left: 2rem;
+                  color: #f1f5f9;
+                }
+                li {
+                  margin: 0.5rem 0;
+                  line-height: 1.6;
+                }
+                /* Code blocks */
+                pre, code {
+                  background-color: #27272a;
+                  border: 1px solid #3f3f46;
+                  border-radius: 6px;
+                  padding: 0.2em 0.4em;
+                  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+                  font-size: 0.9em;
+                  color: #a5f3fc;
+                }
+                pre {
+                  padding: 1em;
+                  overflow-x: auto;
+                  margin: 1rem 0;
+                }
+                /* Blockquote styling */
+                blockquote {
+                  border-left: 4px solid #818cf8;
+                  padding-left: 1rem;
+                  margin: 1rem 0;
+                  color: #d1d5db;
+                  font-style: italic;
+                  background-color: rgba(129, 140, 248, 0.05);
+                  padding: 1rem;
+                  border-radius: 4px;
                 }
               `,
               skin: 'oxide-dark',
@@ -213,9 +289,41 @@ const TinyMCEEditor = forwardRef<TinyMCEEditorHandle, TinyMCEEditorProps>(
               statusbar: false,
               paste_as_text: false,
               paste_auto_cleanup_on_paste: true,
+              paste_retain_style_properties: 'all',
+              paste_merge_formats: true,
               convert_urls: false,
               font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 28pt 36pt 48pt',
               font_family_formats: 'System Font=-apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, sans-serif; Arial=arial,helvetica,sans-serif; Times New Roman=times new roman,times,serif; Courier New=courier new,courier,monospace; Georgia=georgia,palatino,serif; Verdana=verdana,geneva,sans-serif',
+              // Table plugin settings for better table handling
+              table_use_colgroups: true,
+              table_resize_bars: true,
+              table_default_attributes: {
+                border: '1'
+              },
+              table_default_styles: {
+                'border-collapse': 'collapse',
+                'width': '100%',
+                'border': '1px solid #3f3f46',
+                'background-color': '#27272a'
+              },
+              table_cell_default_styles: {
+                'padding': '10px 16px',
+                'border': '1px solid #3f3f46',
+                'vertical-align': 'top'
+              },
+              table_header_default_styles: {
+                'background-color': '#3f3f46',
+                'font-weight': '600',
+                'padding': '12px 16px'
+              },
+              // Image settings for better image handling
+              image_advtab: true,
+              image_dimensions: true,
+              image_class_list: [
+                {title: 'Responsive', value: 'img-responsive'},
+                {title: 'Full Width', value: 'img-full-width'},
+                {title: 'Center', value: 'img-center'}
+              ],
               setup: (editor) => {
                 // Add custom command to highlight text
                 editor.addCommand('highlightText', (ui, value) => {

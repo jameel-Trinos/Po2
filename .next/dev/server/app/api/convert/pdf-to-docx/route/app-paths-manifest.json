@@ -1,0 +1,3 @@
+{
+  "/api/convert/pdf-to-docx/route": "app/api/convert/pdf-to-docx/route.js"
+}

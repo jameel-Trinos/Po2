@@ -280,7 +280,7 @@ function EditorContent() {
       formData.append('file', pdfBlob, filename);
 
       // Call the PDF to DOCX conversion API
-      const convertResponse = await fetch('/api/pdf-to-docx', {
+      const convertResponse = await fetch('/api/convert/pdf-to-docx', {
         method: 'POST',
         body: formData,
       });
@@ -288,6 +288,7 @@ function EditorContent() {
       if (!convertResponse.ok) {
         // Try to get error details from the response
         let errorMessage = 'Failed to convert PDF to Word';
+        let errorDetails = '';
         const contentType = convertResponse.headers.get('content-type');
         
         console.error('[PDF to Word] Conversion failed:', {
@@ -306,8 +307,20 @@ function EditorContent() {
             try {
               const errorData = JSON.parse(errorText);
               console.error('[PDF to Word] Parsed error data:', errorData);
-              // Try multiple fields for error message, prioritizing user-friendly messages
-              errorMessage = errorData.message || errorData.error || errorData.details || errorMessage;
+              errorMessage = errorData.message || errorData.error || errorMessage;
+              errorDetails = errorData.details || '';
+              
+              // Provide user-friendly messages
+              if (errorDetails.includes('Network error') || errorDetails.includes('timeout')) {
+                errorMessage = 'Conversion timeout';
+                errorDetails = 'The conversion is taking too long. Please try again or use a smaller PDF.';
+              } else if (errorDetails.includes('credentials')) {
+                errorMessage = 'Configuration error';
+                errorDetails = 'PDF conversion service needs configuration. Please contact support.';
+              } else if (errorData.fallbackError) {
+                errorMessage = 'Cannot convert this PDF';
+                errorDetails = 'This PDF may be encrypted, corrupted, or in an unsupported format.';
+              }
             } catch (parseError) {
               // If JSON parsing fails, use the text as error message
               console.error('[PDF to Word] JSON parse error:', parseError);
@@ -356,7 +369,11 @@ function EditorContent() {
         setWordHtml(htmlContent);
         setEditingMode('word');
         
-        toast.success('Document ready for editing! You can now apply AI suggestions.', { id: loadingToast });
+        toast.success('Document converted successfully!', { 
+          id: loadingToast,
+          description: 'Your document is now ready for editing.',
+          duration: 4000
+        });
       }
     } catch (err) {
       console.error('Error converting PDF to Word:', err);
@@ -497,15 +514,20 @@ function EditorContent() {
                             variant="outline" 
                             size="sm" 
                             disabled={isConverting || !pdfUrl}
-                            className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                            className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {isConverting ? (
-                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                              <>
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                Converting…
+                              </>
                             ) : (
-                              <FileDown className="h-4 w-4 mr-2" />
+                              <>
+                                <FileDown className="h-4 w-4 mr-2" />
+                                Convert to Word
+                                <ChevronDown className="h-3 w-3 ml-2" />
+                              </>
                             )}
-                            Convert to Word
-                            <ChevronDown className="h-3 w-3 ml-2" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56">

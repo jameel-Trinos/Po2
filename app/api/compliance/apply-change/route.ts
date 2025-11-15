@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { PDFDocument } from 'pdf-lib';
 import mammoth from 'mammoth';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { JSDOM } from 'jsdom';
+import { updateSuggestion, getDocumentWithSuggestions } from '@/lib/db-helpers';
 
 // Force Node.js runtime
 export const runtime = 'nodejs';
@@ -170,6 +172,16 @@ async function applyChangeToDocx(
 
 export async function POST(request: NextRequest) {
   try {
+    // Get authenticated user
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { 
       documentId, 
@@ -185,6 +197,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Missing required fields: documentId, originalText, suggestedText' },
         { status: 400 }
+      );
+    }
+
+    // Verify user owns the document
+    const document = await getDocumentWithSuggestions(documentId, userId);
+    if (!document) {
+      return NextResponse.json(
+        { error: 'Document not found or access denied' },
+        { status: 404 }
       );
     }
 
@@ -212,6 +233,29 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error('Error processing document:', error);
         // Continue without modified document URL
+      }
+    }
+
+    // Update suggestion in database if suggestionId is provided
+    // Note: In a full implementation, you might want to add an isApplied field to the schema
+    // For now, we'll just log the application
+    if (suggestionId) {
+      try {
+        // Try to find and update the suggestion
+        // Since the current schema doesn't have isApplied, we'll just update the suggestedFix
+        // Pass documentId to verify the suggestion belongs to this document
+        await updateSuggestion(
+          suggestionId,
+          {
+            suggestedFix: suggestedText,
+          },
+          documentId
+        );
+        console.log('✅ Updated suggestion in database:', suggestionId);
+      } catch (dbError) {
+        console.error('❌ Database error updating suggestion:', dbError);
+        // Log the error but continue - the document update was successful
+        // This allows the user to apply changes even if the suggestion record is missing
       }
     }
 

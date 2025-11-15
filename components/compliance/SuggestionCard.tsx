@@ -5,6 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertTriangle, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export interface ComplianceSuggestion {
   id?: string;
@@ -37,113 +39,92 @@ export default function SuggestionCard({
   const getSeverityIcon = () => {
     switch (suggestion.severity) {
       case 'critical':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-5 w-5 text-red-400 drop-shadow-[0_0_6px_rgba(255,0,0,0.7)]" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-5 w-5 text-yellow-400 drop-shadow-[0_0_6px_rgba(255,255,0,0.7)]" />;
       default:
-        return <Info className="h-4 w-4 text-blue-500" />;
+        return <Info className="h-5 w-5 text-cyan-400 drop-shadow-[0_0_6px_rgba(0,255,255,0.7)]" />;
     }
   };
 
-  const getSeverityColor = () => {
-    switch (suggestion.severity) {
-      case 'critical':
-        return 'destructive';
-      case 'warning':
-        return 'default';
-      default:
-        return 'secondary';
-    }
-  };
-
-  const getCategoryColor = () => {
+  const getCategoryGradient = () => {
     switch (suggestion.category) {
       case 'FINRA':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+        return 'bg-gradient-to-r from-purple-600 via-pink-500 to-purple-400 text-white';
       case 'SEC':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-gradient-to-r from-sky-500 via-teal-400 to-cyan-400 text-white';
       case 'Grammar':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-gradient-to-r from-green-500 via-lime-400 to-green-400 text-white';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+        return 'bg-gray-700 text-gray-200';
     }
   };
 
   if (suggestion.isApplied) {
     return (
-      <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30">
-        <CardContent className="p-3">
-          <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
-            <CheckCircle2 className="h-4 w-4" />
-            <span className="text-sm font-medium">Applied</span>
-          </div>
+      <Card className="bg-gradient-to-r from-green-800/20 via-green-700/10 to-green-900/20 border border-green-400 shadow-glow">
+        <CardContent className="p-4 flex items-center gap-2">
+          <CheckCircle2 className="h-5 w-5 text-green-400 drop-shadow-[0_0_8px_rgba(0,255,0,0.7)]" />
+          <span className="text-sm font-semibold text-green-200">Applied</span>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card
-      className={`border cursor-pointer transition-all hover:shadow-md ${
-        isSelected
-          ? 'border-emerald-500 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 shadow-lg'
-          : 'border-zinc-200 dark:border-zinc-700'
-      }`}
-      onClick={onSelect}
-    >
-      <CardContent className="p-4 space-y-3">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2">
-            {getSeverityIcon()}
-            <Badge variant={getSeverityColor() as any} className="text-xs">
-              {suggestion.severity}
+    <motion.div whileHover={{ scale: 1.02 }} className="cursor-pointer">
+      <Card
+        className={cn(
+          "border border-white/10 bg-[radial-gradient(ellipse_at_top_right,_#0f172a,_#050816)] shadow-glow transition-all duration-300 rounded-xl",
+          isSelected && 'border-cyan-400 shadow-[0_0_20px_rgba(0,255,255,0.4)]'
+        )}
+        onClick={onSelect}
+      >
+        <CardContent className="p-4 space-y-3">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2">
+              {getSeverityIcon()}
+              <Badge className="text-xs bg-white/5 text-white/80">{suggestion.severity}</Badge>
+            </div>
+            <Badge className={cn('text-xs px-2 py-1 rounded-md', getCategoryGradient())}>
+              {suggestion.category}
             </Badge>
           </div>
-          <Badge className={`text-xs ${getCategoryColor()}`}>
-            {suggestion.category}
-          </Badge>
-        </div>
 
-        {/* Explanation */}
-        <p className="text-sm text-gray-700 dark:text-gray-300">
-          {suggestion.explanation}
-        </p>
+          {/* Explanation */}
+          <p className="text-sm text-slate-200">{suggestion.explanation}</p>
 
-        {/* Original vs Suggested Text */}
-        <div className="space-y-2 text-xs">
-          <div className="p-2 bg-red-50 dark:bg-red-950/30 rounded border border-red-200 dark:border-red-800">
-            <p className="text-red-700 dark:text-red-300 font-medium mb-1">Original:</p>
-            <p className="text-red-900 dark:text-red-100">{suggestion.originalText}</p>
+          {/* Original vs Suggested Text */}
+          <div className="space-y-2 text-xs">
+            <div className="p-2 bg-red-900/10 rounded border border-red-700/30">
+              <p className="text-red-400 font-medium mb-1">Original:</p>
+              <p className="text-red-200">{suggestion.originalText}</p>
+            </div>
+            <div className="p-2 bg-green-900/10 rounded border border-green-700/30">
+              <p className="text-green-400 font-medium mb-1">Suggested:</p>
+              <p className="text-green-200">{suggestion.suggestedText}</p>
+            </div>
           </div>
-          <div className="p-2 bg-green-50 dark:bg-green-950/30 rounded border border-green-200 dark:border-green-800">
-            <p className="text-green-700 dark:text-green-300 font-medium mb-1">Suggested:</p>
-            <p className="text-green-900 dark:text-green-100">{suggestion.suggestedText}</p>
-          </div>
-        </div>
 
-        {/* Page Number */}
-        {suggestion.page && (
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Page {suggestion.page}
-          </p>
-        )}
+          {/* Page Number */}
+          {suggestion.page && <p className="text-xs text-slate-400">Page {suggestion.page}</p>}
 
-        {/* Apply Button */}
-        <Button
-          variant="default"
-          size="sm"
-          className="w-full"
-          onClick={(e) => {
-            e.stopPropagation();
-            onApply();
-          }}
-          disabled={isApplying}
-        >
-          {isApplying ? 'Applying...' : 'Apply Change'}
-        </Button>
-      </CardContent>
-    </Card>
+          {/* Apply Button */}
+          <Button
+            variant="default"
+            size="sm"
+            className="w-full bg-gradient-to-r from-purple-700/30 via-pink-600/20 to-sky-700/20 hover:scale-105 transform transition text-white shadow-glow"
+            onClick={(e) => {
+              e.stopPropagation();
+              onApply();
+            }}
+            disabled={isApplying}
+          >
+            {isApplying ? 'Applying...' : 'Apply Change'}
+          </Button>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
-

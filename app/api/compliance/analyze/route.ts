@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import mammoth from 'mammoth';
 import PDFParser from 'pdf2json';
 import { storePDF } from '@/lib/pdfStorage';
+import { saveUploadedDocument, saveAISuggestions } from '@/lib/db-helpers';
 
 // Force Node.js runtime for mammoth compatibility
 export const runtime = 'nodejs';
@@ -243,6 +245,25 @@ export async function POST(request: NextRequest) {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
   try {
+    // Get authenticated user
+    // In Clerk v6, auth() automatically reads from the request
+    const { userId } = await auth();
+    
+    if (!userId) {
+      console.error('❌ No userId found. Auth check failed.');
+      console.error('  Request URL:', request.url);
+      console.error('  Request headers:', {
+        cookie: request.headers.get('cookie') ? 'present (length: ' + request.headers.get('cookie')?.length + ')' : 'missing',
+        'user-agent': request.headers.get('user-agent')?.substring(0, 50) || 'missing',
+      });
+      return createErrorResponse(
+        'Unauthorized',
+        'You must be signed in to upload documents. Please refresh the page and try again.',
+        401
+      );
+    }
+    
+    console.log('✅ User authenticated:', userId);
     console.log('📋 Request details:');
     console.log('  Method:', request.method);
     console.log('  Content-Type:', request.headers.get('content-type'));
@@ -473,12 +494,50 @@ export async function POST(request: NextRequest) {
       console.log('⚠️ No compliance issues detected. Sample text:', extractedText.substring(0, 200));
     }
 
+    // Save document to database
+    console.log('💾 Saving document to database...');
+    let savedDocument;
+    try {
+      // Use a storage URL - for now, we'll use the documentId as a reference
+      // In production, you'd upload the file to S3/storage and use that URL
+      const storageUrl = `local://${documentId}`;
+      
+      savedDocument = await saveUploadedDocument(
+        userId,
+        file.name,
+        fileType,
+        storageUrl
+      );
+      
+      console.log('✅ Document saved to database:', savedDocument.id);
+      
+      // Save suggestions to database
+      if (suggestions.length > 0) {
+        console.log('💾 Saving suggestions to database...');
+        const dbSuggestions = suggestions.map(s => ({
+          category: s.category,
+          issue: s.explanation,
+          severity: s.severity,
+          startIndex: null, // Could calculate from text position if needed
+          endIndex: null,
+          suggestedFix: s.suggestedText,
+        }));
+        
+        await saveAISuggestions(savedDocument.id, dbSuggestions);
+        console.log(`✅ Saved ${suggestions.length} suggestions to database`);
+      }
+    } catch (dbError) {
+      console.error('❌ Database error:', dbError);
+      // Continue with response even if database save fails
+      // In production, you might want to handle this differently
+    }
+
     // Mock: Deduct balance for API usage (0.10 credits per analysis)
     const costPerAnalysis = 0.10;
 
     const successResponse = {
       success: true,
-      documentId, // Document ID generated earlier
+      documentId: savedDocument?.id || documentId, // Use database ID if available
       fileName: file.name,
       fileType,
       htmlContent,

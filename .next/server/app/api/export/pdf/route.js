@@ -1,0 +1,10 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/export/pdf/route.js")
+R.c("server/chunks/[root-of-the-server]__f2e4bb9e._.js")
+R.c("server/chunks/node_modules_docx_dist_index_mjs_19a322a0._.js")
+R.c("server/chunks/node_modules_@pdf-lib_standard-fonts_es_6d416a5e._.js")
+R.c("server/chunks/node_modules_pdf-lib_es_85c2b074._.js")
+R.c("server/chunks/node_modules_914e221f._.js")
+R.c("server/chunks/[root-of-the-server]__b2da729a._.js")
+R.c("server/chunks/_next-internal_server_app_api_export_pdf_route_actions_baf49296.js")
+R.m(86519)
+module.exports=R.m(86519).exports

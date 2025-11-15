@@ -1,9 +1,17 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Suggestion } from '@/lib/types/proofreader';
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { saveAISuggestions } from '@/lib/db-helpers';
 
 export async function POST(request: NextRequest) {
   try {
+    // Get authenticated user
+    const { userId } = await auth();
+    
+    // Note: For analyze route, we'll make authentication optional for backward compatibility
+    // but require documentId if saving to database
+    
     // Check for GEMINI_API_KEY (server-side) or NEXT_PUBLIC_API_KEY (for backward compatibility)
     const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_API_KEY;
     
@@ -14,11 +22,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { pdfTextByPage } = await request.json();
+    const { pdfTextByPage, documentId } = await request.json();
 
     console.log('[API /analyze] Received request');
     console.log('[API /analyze] Text length:', pdfTextByPage?.length || 0);
     console.log('[API /analyze] Text preview:', pdfTextByPage?.substring(0, 200));
+    console.log('[API /analyze] Document ID:', documentId || 'none');
+    console.log('[API /analyze] User ID:', userId || 'none');
 
     if (!pdfTextByPage || typeof pdfTextByPage !== 'string') {
       console.error('[API /analyze] Invalid request: pdfTextByPage is missing or not a string');
@@ -170,6 +180,27 @@ export async function POST(request: NextRequest) {
     
     console.log('[API /analyze] Parsed suggestions count:', suggestions.length);
     console.log('[API /analyze] First suggestion:', suggestions[0]);
+    
+    // Save suggestions to database if documentId and userId are provided
+    if (documentId && userId && suggestions.length > 0) {
+      try {
+        console.log('[API /analyze] Saving suggestions to database...');
+        const dbSuggestions = suggestions.map(s => ({
+          category: s.category || 'compliance',
+          issue: s.issue || s.explanation || 'Issue found',
+          severity: s.severity || 'warning',
+          startIndex: null, // Could calculate from text position if needed
+          endIndex: null,
+          suggestedFix: s.suggestion || null,
+        }));
+        
+        await saveAISuggestions(documentId, dbSuggestions);
+        console.log('[API /analyze] ✅ Saved suggestions to database');
+      } catch (dbError) {
+        console.error('[API /analyze] ❌ Database error:', dbError);
+        // Continue with response even if database save fails
+      }
+    }
     
     return NextResponse.json({ suggestions });
   } catch (error) {

@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Document {
+  id            String       @id @default(uuid())
+  userId        String
+  originalName  String
+  fileType      String
+  storageUrl    String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  suggestions   Suggestion[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Suggestion {
+  id            String    @id @default(uuid())
+  documentId    String
+  category      String
+  issue         String
+  severity      String
+  startIndex    Int?
+  endIndex      Int?
+  suggestedFix  String?
+  document      Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([category])
+  @@index([severity])
+}

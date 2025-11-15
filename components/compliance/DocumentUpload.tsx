@@ -61,6 +61,7 @@ export default function DocumentUpload({ onUploadSuccess, onError }: DocumentUpl
       const response = await fetch('/api/compliance/analyze', {
         method: 'POST',
         body: formData,
+        credentials: 'include', // Include cookies for authentication
       });
 
       console.log('📥 Response status:', response.status, response.statusText);
@@ -221,8 +222,8 @@ export default function DocumentUpload({ onUploadSuccess, onError }: DocumentUpl
       const formData = new FormData();
       formData.append('file', file);
 
-      console.log('📤 Converting PDF to DOCX via /api/pdf-to-docx...');
-      const response = await fetch('/api/pdf-to-docx', {
+      console.log('📤 Converting PDF to DOCX via /api/convert/pdf-to-docx...');
+      const response = await fetch('/api/convert/pdf-to-docx', {
         method: 'POST',
         body: formData,
       });
@@ -231,6 +232,7 @@ export default function DocumentUpload({ onUploadSuccess, onError }: DocumentUpl
 
       if (!response.ok) {
         let errorMessage = 'Failed to convert PDF to Word';
+        let errorDetails = '';
         
         try {
           const contentType = response.headers.get('content-type');
@@ -238,13 +240,32 @@ export default function DocumentUpload({ onUploadSuccess, onError }: DocumentUpl
           
           if (contentType && contentType.includes('application/json') && text) {
             const errorData = JSON.parse(text);
-            errorMessage = errorData.message || errorData.error || errorData.details || errorMessage;
+            errorMessage = errorData.message || errorData.error || errorMessage;
+            errorDetails = errorData.details || '';
+            
+            // Provide user-friendly messages
+            if (errorDetails.includes('Network error') || errorDetails.includes('timeout')) {
+              errorMessage = 'Conversion timeout';
+              errorDetails = 'The conversion is taking too long. Please try again or use a smaller PDF.';
+            } else if (errorDetails.includes('credentials')) {
+              errorMessage = 'Configuration error';
+              errorDetails = 'PDF conversion service needs configuration. Please contact support.';
+            } else if (errorData.fallbackError) {
+              errorMessage = 'Cannot convert this PDF';
+              errorDetails = 'This PDF may be encrypted, corrupted, or in an unsupported format.';
+            }
           } else if (text) {
-            errorMessage = text;
+            errorDetails = text.substring(0, 200);
           }
         } catch (e) {
           console.error('Error reading response:', e);
         }
+        
+        // Show detailed error to user
+        toast.error(errorMessage, {
+          description: errorDetails,
+          duration: 7000
+        });
         
         throw new Error(errorMessage);
       }
@@ -270,6 +291,7 @@ export default function DocumentUpload({ onUploadSuccess, onError }: DocumentUpl
       const analysisResponse = await fetch('/api/compliance/analyze', {
         method: 'POST',
         body: analysisFormData,
+        credentials: 'include', // Include cookies for authentication
       });
 
       console.log('📥 Analysis response status:', analysisResponse.status, analysisResponse.statusText);

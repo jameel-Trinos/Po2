@@ -3,3 +3,10 @@
 /.clerk/
 *.env*
 node_modules
+
+# Adobe PDF Services credentials (prevent credential leaks)
+keys/
+pdfservices-api-credentials.json
+private.key
+
+/src/generated/prisma

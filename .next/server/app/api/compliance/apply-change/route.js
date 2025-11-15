@@ -1,0 +1,10 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/compliance/apply-change/route.js")
+R.c("server/chunks/[root-of-the-server]__f971890d._.js")
+R.c("server/chunks/[root-of-the-server]__b2da729a._.js")
+R.c("server/chunks/node_modules_@pdf-lib_standard-fonts_es_6d416a5e._.js")
+R.c("server/chunks/node_modules_fe22951b._.js")
+R.c("server/chunks/node_modules_pdf-lib_es_85c2b074._.js")
+R.c("server/chunks/node_modules_docx_dist_index_mjs_19a322a0._.js")
+R.c("server/chunks/_next-internal_server_app_api_compliance_apply-change_route_actions_860c857d.js")
+R.m(25076)
+module.exports=R.m(25076).exports

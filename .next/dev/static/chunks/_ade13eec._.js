@@ -340,7 +340,7 @@ const TinyMCEEditor = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$pr
                   line-height: 1.7;
                   color: #f1f5f9;
                   background-color: #18181b;
-                  max-width: 900px;
+                  max-width: 1100px;
                   margin: 0 auto;
                 }
                 h1, h2, h3, h4, h5, h6 {
@@ -353,6 +353,7 @@ const TinyMCEEditor = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$pr
                 p {
                   margin-bottom: 1em;
                   color: #f1f5f9;
+                  line-height: 1.6;
                 }
                 a {
                   color: #818cf8;
@@ -362,6 +363,81 @@ const TinyMCEEditor = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$pr
                 }
                 a:hover {
                   border-bottom-color: #818cf8;
+                }
+                /* Table styling for better formatting */
+                table {
+                  border-collapse: collapse;
+                  width: 100%;
+                  margin: 1.5rem 0;
+                  border: 1px solid #3f3f46;
+                  background-color: #27272a;
+                  overflow: hidden;
+                  border-radius: 8px;
+                }
+                th {
+                  background-color: #3f3f46;
+                  color: #f8fafc;
+                  font-weight: 600;
+                  padding: 12px 16px;
+                  text-align: left;
+                  border: 1px solid #52525b;
+                }
+                td {
+                  padding: 10px 16px;
+                  border: 1px solid #3f3f46;
+                  color: #e4e4e7;
+                  vertical-align: top;
+                }
+                tr:nth-child(even) {
+                  background-color: #2d2d31;
+                }
+                tr:hover {
+                  background-color: #35353a;
+                }
+                /* Image styling for proper display */
+                img {
+                  max-width: 100%;
+                  height: auto;
+                  display: block;
+                  margin: 1.5rem auto;
+                  border-radius: 8px;
+                  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                }
+                /* List styling */
+                ul, ol {
+                  margin: 1rem 0;
+                  padding-left: 2rem;
+                  color: #f1f5f9;
+                }
+                li {
+                  margin: 0.5rem 0;
+                  line-height: 1.6;
+                }
+                /* Code blocks */
+                pre, code {
+                  background-color: #27272a;
+                  border: 1px solid #3f3f46;
+                  border-radius: 6px;
+                  padding: 0.2em 0.4em;
+                  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+                  font-size: 0.9em;
+                  color: #a5f3fc;
+                }
+                pre {
+                  padding: 1em;
+                  overflow-x: auto;
+                  margin: 1rem 0;
+                }
+                /* Blockquote styling */
+                blockquote {
+                  border-left: 4px solid #818cf8;
+                  padding-left: 1rem;
+                  margin: 1rem 0;
+                  color: #d1d5db;
+                  font-style: italic;
+                  background-color: rgba(129, 140, 248, 0.05);
+                  padding: 1rem;
+                  border-radius: 4px;
                 }
               `,
                         skin: 'oxide-dark',
@@ -450,9 +526,50 @@ const TinyMCEEditor = /*#__PURE__*/ _s((0, __TURBOPACK__imported__module__$5b$pr
                         statusbar: false,
                         paste_as_text: false,
                         paste_auto_cleanup_on_paste: true,
+                        paste_retain_style_properties: 'all',
+                        paste_merge_formats: true,
                         convert_urls: false,
                         font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 28pt 36pt 48pt',
                         font_family_formats: 'System Font=-apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, sans-serif; Arial=arial,helvetica,sans-serif; Times New Roman=times new roman,times,serif; Courier New=courier new,courier,monospace; Georgia=georgia,palatino,serif; Verdana=verdana,geneva,sans-serif',
+                        // Table plugin settings for better table handling
+                        table_use_colgroups: true,
+                        table_resize_bars: true,
+                        table_default_attributes: {
+                            border: '1'
+                        },
+                        table_default_styles: {
+                            'border-collapse': 'collapse',
+                            'width': '100%',
+                            'border': '1px solid #3f3f46',
+                            'background-color': '#27272a'
+                        },
+                        table_cell_default_styles: {
+                            'padding': '10px 16px',
+                            'border': '1px solid #3f3f46',
+                            'vertical-align': 'top'
+                        },
+                        table_header_default_styles: {
+                            'background-color': '#3f3f46',
+                            'font-weight': '600',
+                            'padding': '12px 16px'
+                        },
+                        // Image settings for better image handling
+                        image_advtab: true,
+                        image_dimensions: true,
+                        image_class_list: [
+                            {
+                                title: 'Responsive',
+                                value: 'img-responsive'
+                            },
+                            {
+                                title: 'Full Width',
+                                value: 'img-full-width'
+                            },
+                            {
+                                title: 'Center',
+                                value: 'img-center'
+                            }
+                        ],
                         setup: (editor)=>{
                             // Add custom command to highlight text
                             editor.addCommand('highlightText', (ui, value)=>{
@@ -1231,7 +1348,8 @@ function DocumentUpload({ onUploadSuccess, onError }) {
             console.log('📤 Uploading file to /api/compliance/analyze...');
             const response = await fetch('/api/compliance/analyze', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             });
             console.log('📥 Response status:', response.status, response.statusText);
             if (!response.ok) {
@@ -1378,26 +1496,44 @@ function DocumentUpload({ onUploadSuccess, onError }) {
             // Create FormData to send to the API
             const formData = new FormData();
             formData.append('file', file);
-            console.log('📤 Converting PDF to DOCX via /api/pdf-to-docx...');
-            const response = await fetch('/api/pdf-to-docx', {
+            console.log('📤 Converting PDF to DOCX via /api/convert/pdf-to-docx...');
+            const response = await fetch('/api/convert/pdf-to-docx', {
                 method: 'POST',
                 body: formData
             });
             console.log('📥 Conversion response status:', response.status, response.statusText);
             if (!response.ok) {
                 let errorMessage = 'Failed to convert PDF to Word';
+                let errorDetails = '';
                 try {
                     const contentType = response.headers.get('content-type');
                     const text = await response.text();
                     if (contentType && contentType.includes('application/json') && text) {
                         const errorData = JSON.parse(text);
-                        errorMessage = errorData.message || errorData.error || errorData.details || errorMessage;
+                        errorMessage = errorData.message || errorData.error || errorMessage;
+                        errorDetails = errorData.details || '';
+                        // Provide user-friendly messages
+                        if (errorDetails.includes('Network error') || errorDetails.includes('timeout')) {
+                            errorMessage = 'Conversion timeout';
+                            errorDetails = 'The conversion is taking too long. Please try again or use a smaller PDF.';
+                        } else if (errorDetails.includes('credentials')) {
+                            errorMessage = 'Configuration error';
+                            errorDetails = 'PDF conversion service needs configuration. Please contact support.';
+                        } else if (errorData.fallbackError) {
+                            errorMessage = 'Cannot convert this PDF';
+                            errorDetails = 'This PDF may be encrypted, corrupted, or in an unsupported format.';
+                        }
                     } else if (text) {
-                        errorMessage = text;
+                        errorDetails = text.substring(0, 200);
                     }
                 } catch (e) {
                     console.error('Error reading response:', e);
                 }
+                // Show detailed error to user
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error(errorMessage, {
+                    description: errorDetails,
+                    duration: 7000
+                });
                 throw new Error(errorMessage);
             }
             // Get the DOCX blob
@@ -1418,7 +1554,8 @@ function DocumentUpload({ onUploadSuccess, onError }) {
             console.log('📤 Uploading converted DOCX to /api/compliance/analyze...');
             const analysisResponse = await fetch('/api/compliance/analyze', {
                 method: 'POST',
-                body: analysisFormData
+                body: analysisFormData,
+                credentials: 'include'
             });
             console.log('📥 Analysis response status:', analysisResponse.status, analysisResponse.statusText);
             if (!analysisResponse.ok) {
@@ -1490,19 +1627,19 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                             className: "h-5 w-5"
                         }, void 0, false, {
                             fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                            lineNumber: 347,
+                            lineNumber: 369,
                             columnNumber: 11
                         }, this),
                         "Upload Document for Compliance Review"
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                    lineNumber: 346,
+                    lineNumber: 368,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                lineNumber: 345,
+                lineNumber: 367,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1515,20 +1652,20 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                 children: "Error"
                             }, void 0, false, {
                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                lineNumber: 354,
+                                lineNumber: 376,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
                                 children: error
                             }, void 0, false, {
                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                lineNumber: 355,
+                                lineNumber: 377,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                        lineNumber: 353,
+                        lineNumber: 375,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1540,7 +1677,7 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                 children: "Select Document (PDF or DOCX)"
                             }, void 0, false, {
                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                lineNumber: 360,
+                                lineNumber: 382,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1555,7 +1692,7 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                         className: "flex-1"
                                     }, void 0, false, {
                                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                        lineNumber: 364,
+                                        lineNumber: 386,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1567,20 +1704,20 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                                 className: "h-4 w-4 mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                lineNumber: 377,
+                                                lineNumber: 399,
                                                 columnNumber: 15
                                             }, this),
                                             isUploading ? 'Analyzing...' : 'Analyze'
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                        lineNumber: 372,
+                                        lineNumber: 394,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                lineNumber: 363,
+                                lineNumber: 385,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1588,13 +1725,13 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                 children: "Supported formats: PDF, DOCX (up to 10MB). Analysis checks for FINRA, SEC, and grammar compliance."
                             }, void 0, false, {
                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                lineNumber: 381,
+                                lineNumber: 403,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                        lineNumber: 359,
+                        lineNumber: 381,
                         columnNumber: 9
                     }, this),
                     file && !error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1613,7 +1750,7 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                                     children: "Selected:"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                    lineNumber: 391,
+                                                    lineNumber: 413,
                                                     columnNumber: 19
                                                 }, this),
                                                 " ",
@@ -1621,7 +1758,7 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                            lineNumber: 390,
+                                            lineNumber: 412,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1633,13 +1770,13 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                            lineNumber: 393,
+                                            lineNumber: 415,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                    lineNumber: 389,
+                                    lineNumber: 411,
                                     columnNumber: 15
                                 }, this),
                                 file.name.toLowerCase().endsWith('.pdf') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipProvider"], {
@@ -1657,23 +1794,23 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                                         className: "h-4 w-4 animate-spin text-blue-600 dark:text-blue-400"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                        lineNumber: 411,
+                                                        lineNumber: 433,
                                                         columnNumber: 27
                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$type$2d$corner$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileType2$3e$__["FileType2"], {
                                                         className: "h-4 w-4 text-blue-600 dark:text-blue-400"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                        lineNumber: 413,
+                                                        lineNumber: 435,
                                                         columnNumber: 27
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                    lineNumber: 403,
+                                                    lineNumber: 425,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                lineNumber: 402,
+                                                lineNumber: 424,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tooltip$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TooltipContent"], {
@@ -1681,46 +1818,46 @@ function DocumentUpload({ onUploadSuccess, onError }) {
                                                     children: "Convert PDF to Word for editing"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                    lineNumber: 418,
+                                                    lineNumber: 440,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                                lineNumber: 417,
+                                                lineNumber: 439,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                        lineNumber: 401,
+                                        lineNumber: 423,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                                    lineNumber: 400,
+                                    lineNumber: 422,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                            lineNumber: 388,
+                            lineNumber: 410,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                        lineNumber: 387,
+                        lineNumber: 409,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/compliance/DocumentUpload.tsx",
-                lineNumber: 351,
+                lineNumber: 373,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/compliance/DocumentUpload.tsx",
-        lineNumber: 344,
+        lineNumber: 366,
         columnNumber: 5
     }, this);
 }
@@ -2554,6 +2691,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$mo
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$download$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Download$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/download.js [app-client] (ecmascript) <export default as Download>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-text.js [app-client] (ecmascript) <export default as FileText>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$type$2d$corner$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileType2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-type-corner.js [app-client] (ecmascript) <export default as FileType2>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$save$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Save$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/save.js [app-client] (ecmascript) <export default as Save>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$share$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Share2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/share-2.js [app-client] (ecmascript) <export default as Share2>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sonner/dist/index.mjs [app-client] (ecmascript)");
 // Components
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-client] (ecmascript)");
@@ -2638,6 +2777,7 @@ function ComplianceEditorPage() {
     const [suggestions, setSuggestions] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [isApplying, setIsApplying] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isConverting, setIsConverting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [showUpload, setShowUpload] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [highlightInfo, setHighlightInfo] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const editorRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -2835,6 +2975,7 @@ function ComplianceEditorPage() {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('PDF not available for conversion');
             return;
         }
+        setIsConverting(true);
         const loadingToast = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].loading('Converting PDF to Word format...');
         try {
             console.log('📥 Converting PDF to editable format...');
@@ -2845,7 +2986,7 @@ function ComplianceEditorPage() {
             const formData = new FormData();
             formData.append('file', pdfBlob, documentName || 'document.pdf');
             // Call the PDF to DOCX conversion API with the actual file
-            const convertResponse = await fetch('/api/convert-pdf-to-docx', {
+            const convertResponse = await fetch('/api/convert/pdf-to-docx', {
                 method: 'POST',
                 body: formData
             });
@@ -2853,12 +2994,33 @@ function ComplianceEditorPage() {
                 const responseText = await convertResponse.text();
                 console.error('❌ Conversion API error:', responseText);
                 let errorMessage = 'Conversion failed';
+                let errorDetails = '';
                 try {
                     const errorData = JSON.parse(responseText);
                     errorMessage = errorData.message || errorData.error || errorMessage;
+                    errorDetails = errorData.details || '';
+                    // Show a more helpful message to the user
+                    if (errorDetails.includes('Network error') || errorDetails.includes('timeout')) {
+                        errorMessage = 'Network timeout - conversion taking too long';
+                        errorDetails = 'The PDF conversion service is temporarily slow. Please try again, or try with a smaller PDF file.';
+                    } else if (errorDetails.includes('credentials')) {
+                        errorMessage = 'Configuration error';
+                        errorDetails = 'Please contact support - PDF conversion service needs configuration.';
+                    } else if (errorData.fallbackError) {
+                        // Both Adobe and fallback failed
+                        errorMessage = 'Unable to convert this PDF';
+                        errorDetails = 'This PDF may be encrypted, corrupted, or in an unsupported format. Please try a different PDF file.';
+                    }
                 } catch (e) {
-                    errorMessage = responseText.substring(0, 200);
+                    errorMessage = 'Conversion failed';
+                    errorDetails = responseText.substring(0, 200);
                 }
+                // Show detailed toast with retry suggestion
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error(errorMessage, {
+                    description: errorDetails,
+                    duration: 7000,
+                    id: loadingToast
+                });
                 throw new Error(errorMessage);
             }
             console.log('✅ Conversion successful, loading into editor...');
@@ -2875,20 +3037,72 @@ function ComplianceEditorPage() {
                     "p[style-name='Heading 1'] => h1:fresh",
                     "p[style-name='Heading 2'] => h2:fresh",
                     "p[style-name='Heading 3'] => h3:fresh",
+                    "p[style-name='Heading 4'] => h4:fresh",
                     "p[style-name='Title'] => h1.title:fresh",
                     "r[style-name='Strong'] => strong",
-                    "r[style-name='Emphasis'] => em"
+                    "r[style-name='Emphasis'] => em",
+                    "p[style-name='List Paragraph'] => p.list-paragraph:fresh"
                 ],
                 includeDefaultStyleMap: true,
+                includeEmbeddedStyleMap: true,
                 convertImage: mammoth.images.imgElement((image)=>{
                     return image.read("base64").then((imageBuffer)=>{
                         return {
-                            src: `data:${image.contentType};base64,${imageBuffer}`
+                            src: `data:${image.contentType};base64,${imageBuffer}`,
+                            style: "max-width: 100%; height: auto; display: block; margin: 1rem auto;"
                         };
                     });
                 })
             });
-            const htmlContent = result.value;
+            let htmlContent = result.value;
+            // Post-process HTML to improve table and image formatting
+            htmlContent = htmlContent// Add styling to tables (handle both with and without existing attributes)
+            .replace(/<table([^>]*)>/gi, (match, attrs)=>{
+                // Check if style already exists
+                if (attrs.includes('style=')) {
+                    return match; // Keep existing style
+                }
+                return `<table${attrs} style="border-collapse: collapse; width: 100%; margin: 1.5rem 0; border: 1px solid #3f3f46; background-color: #27272a;">`;
+            }).replace(/<td([^>]*)>/gi, (match, attrs)=>{
+                if (attrs.includes('style=')) {
+                    return match;
+                }
+                return `<td${attrs} style="border: 1px solid #3f3f46; padding: 10px 16px; vertical-align: top; color: #e4e4e7;">`;
+            }).replace(/<th([^>]*)>/gi, (match, attrs)=>{
+                if (attrs.includes('style=')) {
+                    return match;
+                }
+                return `<th${attrs} style="border: 1px solid #52525b; padding: 12px 16px; background-color: #3f3f46; font-weight: 600; text-align: left; color: #f8fafc;">`;
+            })// Ensure images are properly contained
+            .replace(/<img([^>]*?)>/gi, (match, attrs)=>{
+                // Preserve existing attributes but ensure proper styling
+                if (!attrs.includes('style=')) {
+                    return `<img${attrs} style="max-width: 100%; height: auto; display: block; margin: 1.5rem auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">`;
+                }
+                return match;
+            })// Add spacing to paragraphs if no style exists
+            .replace(/<p([^>]*)>/gi, (match, attrs)=>{
+                if (attrs.includes('style=')) {
+                    return match;
+                }
+                return `<p${attrs} style="margin: 0.5rem 0; line-height: 1.6;">`;
+            })// Handle lists better
+            .replace(/<ul([^>]*)>/gi, (match, attrs)=>{
+                if (attrs.includes('style=')) {
+                    return match;
+                }
+                return `<ul${attrs} style="margin: 1rem 0; padding-left: 2rem;">`;
+            }).replace(/<ol([^>]*)>/gi, (match, attrs)=>{
+                if (attrs.includes('style=')) {
+                    return match;
+                }
+                return `<ol${attrs} style="margin: 1rem 0; padding-left: 2rem;">`;
+            }).replace(/<li([^>]*)>/gi, (match, attrs)=>{
+                if (attrs.includes('style=')) {
+                    return match;
+                }
+                return `<li${attrs} style="margin: 0.5rem 0; line-height: 1.6;">`;
+            });
             // Log any conversion messages (warnings about unsupported features)
             if (result.messages.length > 0) {
                 console.log('Conversion messages:', result.messages);
@@ -2897,37 +3111,60 @@ function ComplianceEditorPage() {
             setEditorContent(htmlContent);
             setFileType('docx');
             setPdfUrl(null); // Clear PDF URL to switch to editor view
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Document converted! Click "Analyze Content" to check compliance.', {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Document converted successfully!', {
                 id: loadingToast,
-                duration: 5000
+                description: 'Your document is now ready for editing.',
+                duration: 4000
             });
         } catch (err) {
             console.error('Conversion error:', err);
             const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('Failed to convert PDF', {
-                description: errorMessage,
-                id: loadingToast
-            });
+            // Only show toast if we haven't shown one already (check if loadingToast still exists)
+            // The error handling above already shows a detailed toast
+            if (errorMessage === 'Unknown error') {
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('Failed to convert PDF', {
+                    description: 'An unexpected error occurred. Please try again.',
+                    id: loadingToast
+                });
+            }
+        } finally{
+            setIsConverting(false);
         }
     };
     // Download as Word file
     const handleDownloadWord = async ()=>{
+        const loadingToast = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].loading('Preparing download...');
         try {
             if (fileType === 'pdf' && pdfUrl) {
                 // For PDF files, convert and download
-                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].info('Converting PDF to Word...');
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].loading('Converting PDF to Word...', {
+                    id: loadingToast
+                });
                 // Convert data URL to blob
                 const response = await fetch(pdfUrl);
                 const pdfBlob = await response.blob();
                 // Create form data with the PDF file
                 const formData = new FormData();
                 formData.append('file', pdfBlob, documentName || 'document.pdf');
-                const convertResponse = await fetch('/api/convert-pdf-to-docx', {
+                const convertResponse = await fetch('/api/convert/pdf-to-docx', {
                     method: 'POST',
                     body: formData
                 });
                 if (!convertResponse.ok) {
-                    throw new Error('Failed to convert PDF to Word');
+                    const responseText = await convertResponse.text();
+                    console.error('❌ Download conversion error:', responseText);
+                    let errorMessage = 'Failed to convert PDF to Word';
+                    try {
+                        const errorData = JSON.parse(responseText);
+                        if (errorData.details && errorData.details.includes('timeout')) {
+                            errorMessage = 'Conversion timeout - please try again or use a smaller file';
+                        } else if (errorData.fallbackError) {
+                            errorMessage = 'Unable to convert this PDF - it may be encrypted or corrupted';
+                        }
+                    } catch (e) {
+                    // Use default error message
+                    }
+                    throw new Error(errorMessage);
                 }
                 const docxBlob = await convertResponse.blob();
                 const url = URL.createObjectURL(docxBlob);
@@ -2938,7 +3175,9 @@ function ComplianceEditorPage() {
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Word document downloaded');
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Word document downloaded', {
+                    id: loadingToast
+                });
             } else if (editorRef.current) {
                 // For documents in editor
                 const content = editorRef.current.getContent();
@@ -2951,13 +3190,21 @@ function ComplianceEditorPage() {
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Word document downloaded');
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Word document downloaded', {
+                    id: loadingToast
+                });
             } else {
-                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('No content to download');
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('No content to download', {
+                    id: loadingToast
+                });
             }
         } catch (err) {
             console.error('Download error:', err);
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('Failed to download Word document');
+            const errorMessage = err instanceof Error ? err.message : 'Failed to download Word document';
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('Download failed', {
+                description: errorMessage,
+                id: loadingToast
+            });
         }
     };
     // Download as PDF
@@ -3003,6 +3250,93 @@ function ComplianceEditorPage() {
         setHighlightInfo(null);
         setShowUpload(true);
     };
+    // Handle save draft
+    const handleSaveDraft = async ()=>{
+        if (!documentId) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('No document to save');
+            return;
+        }
+        const loadingToast = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].loading('Saving draft...');
+        try {
+            // Update document in database to mark it as saved/updated
+            const response = await fetch(`/api/documents/${documentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    originalName: documentName || 'Untitled Document',
+                    fileType: fileType || 'pdf'
+                })
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(()=>({}));
+                throw new Error(errorData.error || 'Failed to save draft');
+            }
+            const result = await response.json();
+            // Also save to localStorage for backward compatibility
+            if ("TURBOPACK compile-time truthy", 1) {
+                const content = editorRef.current?.getContent() || editorContent;
+                const draftData = {
+                    documentId,
+                    documentName,
+                    fileType,
+                    content,
+                    suggestions: suggestions.filter((s)=>!s.isApplied),
+                    timestamp: new Date().toISOString()
+                };
+                const drafts = JSON.parse(localStorage.getItem('documentDrafts') || '[]');
+                const existingIndex = drafts.findIndex((d)=>d.documentId === documentId);
+                if (existingIndex >= 0) {
+                    drafts[existingIndex] = draftData;
+                } else {
+                    drafts.push(draftData);
+                }
+                localStorage.setItem('documentDrafts', JSON.stringify(drafts));
+                // Dispatch event to notify dashboard to refresh
+                window.dispatchEvent(new Event('documentsUpdated'));
+            }
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Draft saved successfully', {
+                id: loadingToast
+            });
+        } catch (err) {
+            console.error('Error saving draft:', err);
+            const errorMessage = err instanceof Error ? err.message : 'Failed to save draft';
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error(errorMessage, {
+                id: loadingToast
+            });
+        }
+    };
+    // Handle share document
+    const handleShareDocument = async ()=>{
+        if (!documentId) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('No document to share');
+            return;
+        }
+        try {
+            // Create a shareable link
+            const shareUrl = `${window.location.origin}/compliance-editor?documentId=${documentId}`;
+            // Try to use Web Share API if available
+            if (navigator.share) {
+                await navigator.share({
+                    title: documentName || 'Document',
+                    text: 'Check out this compliance document',
+                    url: shareUrl
+                });
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Document shared');
+            } else {
+                // Fallback: copy to clipboard
+                await navigator.clipboard.writeText(shareUrl);
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success('Link copied to clipboard');
+            }
+        } catch (err) {
+            // User cancelled or error occurred
+            if (err instanceof Error && err.name !== 'AbortError') {
+                console.error('Error sharing document:', err);
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sonner$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error('Failed to share document');
+            }
+        }
+    };
     // Group suggestions by category
     const groupedSuggestions = suggestions.reduce((acc, suggestion, index)=>{
         const category = suggestion.category || 'Other';
@@ -3043,7 +3377,7 @@ function ComplianceEditorPage() {
                             children: "Financial Compliance Editor"
                         }, void 0, false, {
                             fileName: "[project]/app/compliance-editor/page.tsx",
-                            lineNumber: 499,
+                            lineNumber: 711,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3051,13 +3385,13 @@ function ComplianceEditorPage() {
                             children: "Upload documents for FINRA/SEC compliance review and real-time editing"
                         }, void 0, false, {
                             fileName: "[project]/app/compliance-editor/page.tsx",
-                            lineNumber: 502,
+                            lineNumber: 714,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/compliance-editor/page.tsx",
-                    lineNumber: 498,
+                    lineNumber: 710,
                     columnNumber: 9
                 }, this),
                 showUpload && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3067,12 +3401,12 @@ function ComplianceEditorPage() {
                         onError: handleUploadError
                     }, void 0, false, {
                         fileName: "[project]/app/compliance-editor/page.tsx",
-                        lineNumber: 510,
+                        lineNumber: 722,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/compliance-editor/page.tsx",
-                    lineNumber: 509,
+                    lineNumber: 721,
                     columnNumber: 11
                 }, this),
                 !showUpload && documentId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -3091,7 +3425,7 @@ function ComplianceEditorPage() {
                                                     className: "h-3 w-3 mr-1"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 524,
+                                                    lineNumber: 736,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Document #",
@@ -3099,7 +3433,7 @@ function ComplianceEditorPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 523,
+                                            lineNumber: 735,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3111,7 +3445,7 @@ function ComplianceEditorPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 527,
+                                            lineNumber: 739,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3123,7 +3457,7 @@ function ComplianceEditorPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 530,
+                                            lineNumber: 742,
                                             columnNumber: 17
                                         }, this),
                                         criticalIssues > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3135,13 +3469,13 @@ function ComplianceEditorPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 534,
+                                            lineNumber: 746,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                    lineNumber: 522,
+                                    lineNumber: 734,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3151,100 +3485,121 @@ function ComplianceEditorPage() {
                                             variant: "outline",
                                             size: "sm",
                                             onClick: handleConvertToWord,
-                                            className: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$type$2d$corner$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileType2$3e$__["FileType2"], {
-                                                    className: "h-4 w-4 mr-2 text-blue-600 dark:text-blue-400"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 547,
-                                                    columnNumber: 21
-                                                }, this),
-                                                "Convert to Word"
-                                            ]
-                                        }, void 0, true, {
+                                            disabled: isConverting,
+                                            className: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 disabled:opacity-50 disabled:cursor-not-allowed",
+                                            children: isConverting ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                        className: "h-4 w-4 mr-2 animate-spin text-blue-600 dark:text-blue-400"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/compliance-editor/page.tsx",
+                                                        lineNumber: 762,
+                                                        columnNumber: 25
+                                                    }, this),
+                                                    "Converting…"
+                                                ]
+                                            }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$type$2d$corner$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileType2$3e$__["FileType2"], {
+                                                        className: "h-4 w-4 mr-2 text-blue-600 dark:text-blue-400"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/compliance-editor/page.tsx",
+                                                        lineNumber: 767,
+                                                        columnNumber: 25
+                                                    }, this),
+                                                    "Convert to Word"
+                                                ]
+                                            }, void 0, true)
+                                        }, void 0, false, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 541,
+                                            lineNumber: 753,
                                             columnNumber: 19
                                         }, this),
                                         fileType === 'docx' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                             variant: "outline",
                                             size: "sm",
                                             onClick: handleAnalyzeContent,
-                                            className: "bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40",
+                                            disabled: isConverting,
+                                            className: "bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 disabled:opacity-50 disabled:cursor-not-allowed",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
                                                     className: "h-4 w-4 mr-2 text-purple-600 dark:text-purple-400"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 558,
+                                                    lineNumber: 781,
                                                     columnNumber: 21
                                                 }, this),
                                                 "Analyze Content"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 552,
+                                            lineNumber: 774,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                             variant: "outline",
                                             size: "sm",
                                             onClick: handleDownloadWord,
+                                            disabled: isConverting,
+                                            className: "disabled:opacity-50 disabled:cursor-not-allowed",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$download$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Download$3e$__["Download"], {
                                                     className: "h-4 w-4 mr-2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 563,
+                                                    lineNumber: 792,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Download as Word"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 562,
+                                            lineNumber: 785,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                             variant: "outline",
                                             size: "sm",
                                             onClick: handleDownloadPdf,
+                                            disabled: isConverting,
+                                            className: "disabled:opacity-50 disabled:cursor-not-allowed",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$download$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Download$3e$__["Download"], {
                                                     className: "h-4 w-4 mr-2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 567,
+                                                    lineNumber: 802,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Download PDF"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 566,
+                                            lineNumber: 795,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                                             variant: "default",
                                             size: "sm",
                                             onClick: handleNewDocument,
+                                            disabled: isConverting,
+                                            className: "disabled:opacity-50 disabled:cursor-not-allowed",
                                             children: "New Document"
                                         }, void 0, false, {
                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                            lineNumber: 570,
+                                            lineNumber: 805,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                    lineNumber: 539,
+                                    lineNumber: 751,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/compliance-editor/page.tsx",
-                            lineNumber: 521,
+                            lineNumber: 733,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3252,86 +3607,139 @@ function ComplianceEditorPage() {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "col-span-2",
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                                        className: "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
-                                                className: "pb-3",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
-                                                    className: "text-gray-900 dark:text-gray-50 flex items-center gap-2",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
-                                                            className: "h-5 w-5"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 583,
-                                                            columnNumber: 23
-                                                        }, this),
-                                                        fileType === 'pdf' ? 'PDF Viewer' : 'Document Editor',
-                                                        fileType && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
-                                                            variant: "secondary",
-                                                            className: "ml-2 text-xs",
-                                                            children: fileType.toUpperCase()
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 586,
-                                                            columnNumber: 25
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 582,
-                                                    columnNumber: 21
-                                                }, this)
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/compliance-editor/page.tsx",
-                                                lineNumber: 581,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
-                                                className: "p-0",
-                                                children: fileType === 'pdf' && pdfUrl ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "h-[calc(100vh-300px)]",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PdfViewerWithHighlight, {
-                                                        pdfUrl: pdfUrl,
-                                                        fileName: documentName,
-                                                        highlightInfo: highlightInfo,
-                                                        onPageChange: (page)=>console.log('Page changed:', page),
-                                                        className: "h-full"
-                                                    }, void 0, false, {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
+                                            className: "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
+                                                    className: "pb-3",
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
+                                                        className: "text-gray-900 dark:text-gray-50 flex items-center gap-2",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
+                                                                className: "h-5 w-5"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/compliance-editor/page.tsx",
+                                                                lineNumber: 824,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            fileType === 'pdf' ? 'PDF Viewer' : 'Document Editor',
+                                                            fileType && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
+                                                                variant: "secondary",
+                                                                className: "ml-2 text-xs",
+                                                                children: fileType.toUpperCase()
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/compliance-editor/page.tsx",
+                                                                lineNumber: 827,
+                                                                columnNumber: 25
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
                                                         fileName: "[project]/app/compliance-editor/page.tsx",
-                                                        lineNumber: 595,
-                                                        columnNumber: 25
+                                                        lineNumber: 823,
+                                                        columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 594,
-                                                    columnNumber: 23
-                                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$editor$2f$TinyMCEEditor$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                                    ref: editorRef,
-                                                    content: editorContent,
-                                                    onContentChange: setEditorContent,
-                                                    suggestions: editorSuggestions,
-                                                    selectedSuggestionIndex: selectedSuggestionIndex
+                                                    lineNumber: 822,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
+                                                    className: "p-0",
+                                                    children: fileType === 'pdf' && pdfUrl ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "h-[calc(100vh-300px)]",
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(PdfViewerWithHighlight, {
+                                                            pdfUrl: pdfUrl,
+                                                            fileName: documentName,
+                                                            highlightInfo: highlightInfo,
+                                                            onPageChange: (page)=>console.log('Page changed:', page),
+                                                            className: "h-full"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/app/compliance-editor/page.tsx",
+                                                            lineNumber: 836,
+                                                            columnNumber: 25
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/compliance-editor/page.tsx",
+                                                        lineNumber: 835,
+                                                        columnNumber: 23
+                                                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$editor$2f$TinyMCEEditor$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                        ref: editorRef,
+                                                        content: editorContent,
+                                                        onContentChange: setEditorContent,
+                                                        suggestions: editorSuggestions,
+                                                        selectedSuggestionIndex: selectedSuggestionIndex
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/compliance-editor/page.tsx",
+                                                        lineNumber: 845,
+                                                        columnNumber: 23
+                                                    }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 604,
-                                                    columnNumber: 23
+                                                    lineNumber: 833,
+                                                    columnNumber: 19
                                                 }, this)
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/compliance-editor/page.tsx",
-                                                lineNumber: 592,
-                                                columnNumber: 19
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/app/compliance-editor/page.tsx",
-                                        lineNumber: 580,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/compliance-editor/page.tsx",
+                                            lineNumber: 821,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "mt-4 flex gap-3 justify-end",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                                    variant: "outline",
+                                                    size: "sm",
+                                                    onClick: handleSaveDraft,
+                                                    disabled: !documentId,
+                                                    className: "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$save$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Save$3e$__["Save"], {
+                                                            className: "h-4 w-4 mr-2"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/app/compliance-editor/page.tsx",
+                                                            lineNumber: 865,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        "Save Draft"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/app/compliance-editor/page.tsx",
+                                                    lineNumber: 858,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                                    variant: "outline",
+                                                    size: "sm",
+                                                    onClick: handleShareDocument,
+                                                    disabled: !documentId,
+                                                    className: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$share$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Share2$3e$__["Share2"], {
+                                                            className: "h-4 w-4 mr-2"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/app/compliance-editor/page.tsx",
+                                                            lineNumber: 875,
+                                                            columnNumber: 21
+                                                        }, this),
+                                                        "Share Document"
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/app/compliance-editor/page.tsx",
+                                                    lineNumber: 868,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/compliance-editor/page.tsx",
+                                            lineNumber: 857,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                    lineNumber: 579,
+                                    lineNumber: 820,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3347,7 +3755,7 @@ function ComplianceEditorPage() {
                                                             children: "Compliance Suggestions"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 621,
+                                                            lineNumber: 886,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
@@ -3355,18 +3763,18 @@ function ComplianceEditorPage() {
                                                             children: suggestions.filter((s)=>!s.isApplied).length
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 622,
+                                                            lineNumber: 887,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 620,
+                                                    lineNumber: 885,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/compliance-editor/page.tsx",
-                                                lineNumber: 619,
+                                                lineNumber: 884,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -3379,7 +3787,7 @@ function ComplianceEditorPage() {
                                                             children: "No suggestions found"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 630,
+                                                            lineNumber: 895,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3387,13 +3795,13 @@ function ComplianceEditorPage() {
                                                             children: "Your document looks compliant!"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 631,
+                                                            lineNumber: 896,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                    lineNumber: 629,
+                                                    lineNumber: 894,
                                                     columnNumber: 23
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                                     children: Object.entries(groupedSuggestions).map(([category, items])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3407,14 +3815,14 @@ function ComplianceEditorPage() {
                                                                             children: category
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                                            lineNumber: 638,
+                                                                            lineNumber: 903,
                                                                             columnNumber: 31
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Separator"], {
                                                                             className: "flex-1"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                                            lineNumber: 649,
+                                                                            lineNumber: 914,
                                                                             columnNumber: 31
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3425,13 +3833,13 @@ function ComplianceEditorPage() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                                            lineNumber: 650,
+                                                                            lineNumber: 915,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                                    lineNumber: 637,
+                                                                    lineNumber: 902,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3445,41 +3853,41 @@ function ComplianceEditorPage() {
                                                                             isApplying: isApplying === item.index
                                                                         }, item.index, false, {
                                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                                            lineNumber: 657,
+                                                                            lineNumber: 922,
                                                                             columnNumber: 33
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                                                    lineNumber: 655,
+                                                                    lineNumber: 920,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, category, true, {
                                                             fileName: "[project]/app/compliance-editor/page.tsx",
-                                                            lineNumber: 636,
+                                                            lineNumber: 901,
                                                             columnNumber: 27
                                                         }, this))
                                                 }, void 0, false)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/compliance-editor/page.tsx",
-                                                lineNumber: 627,
+                                                lineNumber: 892,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/compliance-editor/page.tsx",
-                                        lineNumber: 618,
+                                        lineNumber: 883,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/compliance-editor/page.tsx",
-                                    lineNumber: 617,
+                                    lineNumber: 882,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/compliance-editor/page.tsx",
-                            lineNumber: 577,
+                            lineNumber: 818,
                             columnNumber: 13
                         }, this)
                     ]
@@ -3487,16 +3895,16 @@ function ComplianceEditorPage() {
             ]
         }, void 0, true, {
             fileName: "[project]/app/compliance-editor/page.tsx",
-            lineNumber: 496,
+            lineNumber: 708,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/compliance-editor/page.tsx",
-        lineNumber: 490,
+        lineNumber: 702,
         columnNumber: 5
     }, this);
 }
-_s(ComplianceEditorPage, "7lne4CFAhHW+dY5syQDc5KpRRnE=");
+_s(ComplianceEditorPage, "s3nX52L/UFjCHN4BOSGVMA+F4qg=");
 _c1 = ComplianceEditorPage;
 var _c, _c1;
 __turbopack_context__.k.register(_c, "PdfViewerWithHighlight");

@@ -137,10 +137,28 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
-// Validate ../../../app/api/convert-pdf-to-docx/route.ts
+// Validate ../../../app/api/convert/pdf-to-docx/route.ts
 {
-  type __IsExpected<Specific extends RouteHandlerConfig<"/api/convert-pdf-to-docx">> = Specific
-  const handler = {} as typeof import("../../../app/api/convert-pdf-to-docx/route.js")
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/convert/pdf-to-docx">> = Specific
+  const handler = {} as typeof import("../../../app/api/convert/pdf-to-docx/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/documents/[id]/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/documents/[id]">> = Specific
+  const handler = {} as typeof import("../../../app/api/documents/[id]/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/documents/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/documents">> = Specific
+  const handler = {} as typeof import("../../../app/api/documents/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

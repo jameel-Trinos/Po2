@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Download, FileText, FileType2 } from 'lucide-react';
+import { Download, FileText, FileType2, Save, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Components
@@ -50,6 +50,7 @@ export default function ComplianceEditorPage() {
   const [suggestions, setSuggestions] = useState<ComplianceSuggestion[]>([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number | null>(null);
   const [isApplying, setIsApplying] = useState<number | null>(null);
+  const [isConverting, setIsConverting] = useState(false);
   const [showUpload, setShowUpload] = useState(true);
   const [highlightInfo, setHighlightInfo] = useState<HighlightInfo | null>(null);
 
@@ -274,6 +275,7 @@ export default function ComplianceEditorPage() {
       return;
     }
 
+    setIsConverting(true);
     const loadingToast = toast.loading('Converting PDF to Word format...');
 
     try {
@@ -288,7 +290,7 @@ export default function ComplianceEditorPage() {
       formData.append('file', pdfBlob, documentName || 'document.pdf');
       
       // Call the PDF to DOCX conversion API with the actual file
-      const convertResponse = await fetch('/api/convert-pdf-to-docx', {
+      const convertResponse = await fetch('/api/convert/pdf-to-docx', {
         method: 'POST',
         body: formData,
       });
@@ -297,13 +299,36 @@ export default function ComplianceEditorPage() {
         const responseText = await convertResponse.text();
         console.error('❌ Conversion API error:', responseText);
         let errorMessage = 'Conversion failed';
+        let errorDetails = '';
         
         try {
           const errorData = JSON.parse(responseText);
           errorMessage = errorData.message || errorData.error || errorMessage;
+          errorDetails = errorData.details || '';
+          
+          // Show a more helpful message to the user
+          if (errorDetails.includes('Network error') || errorDetails.includes('timeout')) {
+            errorMessage = 'Network timeout - conversion taking too long';
+            errorDetails = 'The PDF conversion service is temporarily slow. Please try again, or try with a smaller PDF file.';
+          } else if (errorDetails.includes('credentials')) {
+            errorMessage = 'Configuration error';
+            errorDetails = 'Please contact support - PDF conversion service needs configuration.';
+          } else if (errorData.fallbackError) {
+            // Both Adobe and fallback failed
+            errorMessage = 'Unable to convert this PDF';
+            errorDetails = 'This PDF may be encrypted, corrupted, or in an unsupported format. Please try a different PDF file.';
+          }
         } catch (e) {
-          errorMessage = responseText.substring(0, 200);
+          errorMessage = 'Conversion failed';
+          errorDetails = responseText.substring(0, 200);
         }
+        
+        // Show detailed toast with retry suggestion
+        toast.error(errorMessage, {
+          description: errorDetails,
+          duration: 7000,
+          id: loadingToast
+        });
         
         throw new Error(errorMessage);
       }
@@ -325,22 +350,83 @@ export default function ComplianceEditorPage() {
             "p[style-name='Heading 1'] => h1:fresh",
             "p[style-name='Heading 2'] => h2:fresh",
             "p[style-name='Heading 3'] => h3:fresh",
+            "p[style-name='Heading 4'] => h4:fresh",
             "p[style-name='Title'] => h1.title:fresh",
             "r[style-name='Strong'] => strong",
             "r[style-name='Emphasis'] => em",
+            "p[style-name='List Paragraph'] => p.list-paragraph:fresh",
           ],
           includeDefaultStyleMap: true,
+          includeEmbeddedStyleMap: true,
           convertImage: mammoth.images.imgElement((image) => {
             return image.read("base64").then((imageBuffer) => {
               return {
-                src: `data:${image.contentType};base64,${imageBuffer}`
+                src: `data:${image.contentType};base64,${imageBuffer}`,
+                style: "max-width: 100%; height: auto; display: block; margin: 1rem auto;"
               };
             });
           })
         }
       );
       
-      const htmlContent = result.value;
+      let htmlContent = result.value;
+      
+      // Post-process HTML to improve table and image formatting
+      htmlContent = htmlContent
+        // Add styling to tables (handle both with and without existing attributes)
+        .replace(/<table([^>]*)>/gi, (match, attrs) => {
+          // Check if style already exists
+          if (attrs.includes('style=')) {
+            return match; // Keep existing style
+          }
+          return `<table${attrs} style="border-collapse: collapse; width: 100%; margin: 1.5rem 0; border: 1px solid #3f3f46; background-color: #27272a;">`;
+        })
+        .replace(/<td([^>]*)>/gi, (match, attrs) => {
+          if (attrs.includes('style=')) {
+            return match;
+          }
+          return `<td${attrs} style="border: 1px solid #3f3f46; padding: 10px 16px; vertical-align: top; color: #e4e4e7;">`;
+        })
+        .replace(/<th([^>]*)>/gi, (match, attrs) => {
+          if (attrs.includes('style=')) {
+            return match;
+          }
+          return `<th${attrs} style="border: 1px solid #52525b; padding: 12px 16px; background-color: #3f3f46; font-weight: 600; text-align: left; color: #f8fafc;">`;
+        })
+        // Ensure images are properly contained
+        .replace(/<img([^>]*?)>/gi, (match, attrs) => {
+          // Preserve existing attributes but ensure proper styling
+          if (!attrs.includes('style=')) {
+            return `<img${attrs} style="max-width: 100%; height: auto; display: block; margin: 1.5rem auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">`;
+          }
+          return match;
+        })
+        // Add spacing to paragraphs if no style exists
+        .replace(/<p([^>]*)>/gi, (match, attrs) => {
+          if (attrs.includes('style=')) {
+            return match;
+          }
+          return `<p${attrs} style="margin: 0.5rem 0; line-height: 1.6;">`;
+        })
+        // Handle lists better
+        .replace(/<ul([^>]*)>/gi, (match, attrs) => {
+          if (attrs.includes('style=')) {
+            return match;
+          }
+          return `<ul${attrs} style="margin: 1rem 0; padding-left: 2rem;">`;
+        })
+        .replace(/<ol([^>]*)>/gi, (match, attrs) => {
+          if (attrs.includes('style=')) {
+            return match;
+          }
+          return `<ol${attrs} style="margin: 1rem 0; padding-left: 2rem;">`;
+        })
+        .replace(/<li([^>]*)>/gi, (match, attrs) => {
+          if (attrs.includes('style=')) {
+            return match;
+          }
+          return `<li${attrs} style="margin: 0.5rem 0; line-height: 1.6;">`;
+        });
       
       // Log any conversion messages (warnings about unsupported features)
       if (result.messages.length > 0) {
@@ -352,26 +438,36 @@ export default function ComplianceEditorPage() {
       setFileType('docx');
       setPdfUrl(null); // Clear PDF URL to switch to editor view
       
-      toast.success('Document converted! Click "Analyze Content" to check compliance.', { 
+      toast.success('Document converted successfully!', { 
         id: loadingToast,
-        duration: 5000
+        description: 'Your document is now ready for editing.',
+        duration: 4000
       });
     } catch (err) {
       console.error('Conversion error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      toast.error('Failed to convert PDF', {
-        description: errorMessage,
-        id: loadingToast
-      });
+      
+      // Only show toast if we haven't shown one already (check if loadingToast still exists)
+      // The error handling above already shows a detailed toast
+      if (errorMessage === 'Unknown error') {
+        toast.error('Failed to convert PDF', {
+          description: 'An unexpected error occurred. Please try again.',
+          id: loadingToast
+        });
+      }
+    } finally {
+      setIsConverting(false);
     }
   };
 
   // Download as Word file
   const handleDownloadWord = async () => {
+    const loadingToast = toast.loading('Preparing download...');
+    
     try {
       if (fileType === 'pdf' && pdfUrl) {
         // For PDF files, convert and download
-        toast.info('Converting PDF to Word...');
+        toast.loading('Converting PDF to Word...', { id: loadingToast });
         
         // Convert data URL to blob
         const response = await fetch(pdfUrl);
@@ -381,13 +477,28 @@ export default function ComplianceEditorPage() {
         const formData = new FormData();
         formData.append('file', pdfBlob, documentName || 'document.pdf');
         
-        const convertResponse = await fetch('/api/convert-pdf-to-docx', {
+        const convertResponse = await fetch('/api/convert/pdf-to-docx', {
           method: 'POST',
           body: formData,
         });
         
         if (!convertResponse.ok) {
-          throw new Error('Failed to convert PDF to Word');
+          const responseText = await convertResponse.text();
+          console.error('❌ Download conversion error:', responseText);
+          
+          let errorMessage = 'Failed to convert PDF to Word';
+          try {
+            const errorData = JSON.parse(responseText);
+            if (errorData.details && errorData.details.includes('timeout')) {
+              errorMessage = 'Conversion timeout - please try again or use a smaller file';
+            } else if (errorData.fallbackError) {
+              errorMessage = 'Unable to convert this PDF - it may be encrypted or corrupted';
+            }
+          } catch (e) {
+            // Use default error message
+          }
+          
+          throw new Error(errorMessage);
         }
         
         const docxBlob = await convertResponse.blob();
@@ -400,7 +511,7 @@ export default function ComplianceEditorPage() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        toast.success('Word document downloaded');
+        toast.success('Word document downloaded', { id: loadingToast });
       } else if (editorRef.current) {
         // For documents in editor
         const content = editorRef.current.getContent();
@@ -414,13 +525,17 @@ export default function ComplianceEditorPage() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        toast.success('Word document downloaded');
+        toast.success('Word document downloaded', { id: loadingToast });
       } else {
-        toast.error('No content to download');
+        toast.error('No content to download', { id: loadingToast });
       }
     } catch (err) {
       console.error('Download error:', err);
-      toast.error('Failed to download Word document');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to download Word document';
+      toast.error('Download failed', {
+        description: errorMessage,
+        id: loadingToast
+      });
     }
   };
 
@@ -469,6 +584,103 @@ export default function ComplianceEditorPage() {
     setSelectedSuggestionIndex(null);
     setHighlightInfo(null);
     setShowUpload(true);
+  };
+
+  // Handle save draft
+  const handleSaveDraft = async () => {
+    if (!documentId) {
+      toast.error('No document to save');
+      return;
+    }
+
+    const loadingToast = toast.loading('Saving draft...');
+    
+    try {
+      // Update document in database to mark it as saved/updated
+      const response = await fetch(`/api/documents/${documentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          originalName: documentName || 'Untitled Document',
+          fileType: fileType || 'pdf',
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to save draft');
+      }
+
+      const result = await response.json();
+      
+      // Also save to localStorage for backward compatibility
+      if (typeof window !== 'undefined') {
+        const content = editorRef.current?.getContent() || editorContent;
+        const draftData = {
+          documentId,
+          documentName,
+          fileType,
+          content,
+          suggestions: suggestions.filter(s => !s.isApplied),
+          timestamp: new Date().toISOString(),
+        };
+        
+        const drafts = JSON.parse(localStorage.getItem('documentDrafts') || '[]');
+        const existingIndex = drafts.findIndex((d: any) => d.documentId === documentId);
+        
+        if (existingIndex >= 0) {
+          drafts[existingIndex] = draftData;
+        } else {
+          drafts.push(draftData);
+        }
+        
+        localStorage.setItem('documentDrafts', JSON.stringify(drafts));
+        
+        // Dispatch event to notify dashboard to refresh
+        window.dispatchEvent(new Event('documentsUpdated'));
+      }
+      
+      toast.success('Draft saved successfully', { id: loadingToast });
+    } catch (err) {
+      console.error('Error saving draft:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save draft';
+      toast.error(errorMessage, { id: loadingToast });
+    }
+  };
+
+  // Handle share document
+  const handleShareDocument = async () => {
+    if (!documentId) {
+      toast.error('No document to share');
+      return;
+    }
+
+    try {
+      // Create a shareable link
+      const shareUrl = `${window.location.origin}/compliance-editor?documentId=${documentId}`;
+      
+      // Try to use Web Share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: documentName || 'Document',
+          text: 'Check out this compliance document',
+          url: shareUrl,
+        });
+        toast.success('Document shared');
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link copied to clipboard');
+      }
+    } catch (err) {
+      // User cancelled or error occurred
+      if (err instanceof Error && err.name !== 'AbortError') {
+        console.error('Error sharing document:', err);
+        toast.error('Failed to share document');
+      }
+    }
   };
 
   // Group suggestions by category
@@ -542,10 +754,20 @@ export default function ComplianceEditorPage() {
                     variant="outline" 
                     size="sm" 
                     onClick={handleConvertToWord}
-                    className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                    disabled={isConverting}
+                    className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <FileType2 className="h-4 w-4 mr-2 text-blue-600 dark:text-blue-400" />
-                    Convert to Word
+                    {isConverting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin text-blue-600 dark:text-blue-400" />
+                        Converting…
+                      </>
+                    ) : (
+                      <>
+                        <FileType2 className="h-4 w-4 mr-2 text-blue-600 dark:text-blue-400" />
+                        Convert to Word
+                      </>
+                    )}
                   </Button>
                 )}
                 {fileType === 'docx' && (
@@ -553,21 +775,40 @@ export default function ComplianceEditorPage() {
                     variant="outline" 
                     size="sm" 
                     onClick={handleAnalyzeContent}
-                    className="bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+                    disabled={isConverting}
+                    className="bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <FileText className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
                     Analyze Content
                   </Button>
                 )}
-                <Button variant="outline" size="sm" onClick={handleDownloadWord}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleDownloadWord}
+                  disabled={isConverting}
+                  className="disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Download as Word
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleDownloadPdf}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleDownloadPdf}
+                  disabled={isConverting}
+                  className="disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Download PDF
                 </Button>
-                <Button variant="default" size="sm" onClick={handleNewDocument}>
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  onClick={handleNewDocument}
+                  disabled={isConverting}
+                  className="disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   New Document
                 </Button>
               </div>
@@ -611,6 +852,30 @@ export default function ComplianceEditorPage() {
                     )}
                   </CardContent>
                 </Card>
+                
+                {/* Save Draft and Share Document Buttons */}
+                <div className="mt-4 flex gap-3 justify-end">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSaveDraft}
+                    disabled={!documentId}
+                    className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Draft
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShareDocument}
+                    disabled={!documentId}
+                    className="bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/40"
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share Document
+                  </Button>
+                </div>
               </div>
 
               {/* Right: Compliance Suggestions (1/3 width) */}
